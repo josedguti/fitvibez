@@ -1,5 +1,5 @@
 /**
- * FitGirly color scheme - feminine yet modern colors (coral, lavender, rose gold, soft pastels)
+ * VibeFit color scheme - feminine yet modern colors (coral, lavender, rose gold, soft pastels)
  */
 
 const primaryColor = "#FF6B6B"; // coral

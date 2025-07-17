@@ -166,19 +166,24 @@ export default function GenerateWorkoutScreen() {
       ) : (
         // Show normal content when not generating
         <>
-          <ScrollView contentContainerStyle={styles.scrollContent}>
-            <View style={styles.header}>
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => router.back()}
-              >
-                <Ionicons name="arrow-back" size={24} color={colors.text} />
-              </TouchableOpacity>
-              <ThemedText type="title" style={styles.title}>
-                Workout Summary
-              </ThemedText>
-            </View>
+          {/* Custom Header */}
+          <View style={styles.header}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => router.back()}
+            >
+              <Ionicons name="chevron-back" size={24} color={colors.text} />
+            </TouchableOpacity>
+            <ThemedText style={styles.headerTitle}>Workout Summary</ThemedText>
+            <TouchableOpacity
+              style={styles.homeButton}
+              onPress={() => router.push("/(tabs)")}
+            >
+              <Ionicons name="home" size={24} color={colors.text} />
+            </TouchableOpacity>
+          </View>
 
+          <ScrollView contentContainerStyle={styles.scrollContent}>
             <ThemedText style={styles.subtitle}>
               Review your selections and generate your personalized workout
             </ThemedText>
@@ -313,18 +318,22 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingTop: 60,
-    paddingBottom: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 16,
   },
   backButton: {
     padding: 8,
   },
-  title: {
-    fontSize: 24,
+  homeButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
     fontWeight: "bold",
     flex: 1,
     textAlign: "center",
-    marginRight: 40, // To center the title accounting for back button
   },
   subtitle: {
     fontSize: 16,

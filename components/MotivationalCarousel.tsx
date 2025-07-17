@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Animated, StyleSheet, View } from "react-native";
 
 import { Colors } from "@/constants/Colors";
@@ -33,14 +33,23 @@ interface MotivationalCarouselProps {
 
 export function MotivationalCarousel({ isVisible }: MotivationalCarouselProps) {
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
-  const [fadeAnim] = useState(new Animated.Value(1));
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const intervalRef = useRef<number | null>(null);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
 
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible) {
+      // Clear interval when not visible
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      return;
+    }
 
-    const interval = setInterval(() => {
+    // Start the carousel
+    intervalRef.current = setInterval(() => {
       // Fade out
       Animated.timing(fadeAnim, {
         toValue: 0,
@@ -59,8 +68,13 @@ export function MotivationalCarousel({ isVisible }: MotivationalCarouselProps) {
       });
     }, 3000); // Change quote every 3 seconds
 
-    return () => clearInterval(interval);
-  }, [isVisible, fadeAnim]);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isVisible]); // Removed fadeAnim from dependencies
 
   useEffect(() => {
     if (isVisible) {
@@ -68,7 +82,7 @@ export function MotivationalCarousel({ isVisible }: MotivationalCarouselProps) {
       fadeAnim.setValue(1);
       setCurrentQuoteIndex(0);
     }
-  }, [isVisible, fadeAnim]);
+  }, [isVisible]); // Removed fadeAnim from dependencies
 
   if (!isVisible) return null;
 
@@ -142,27 +156,49 @@ export function MotivationalCarousel({ isVisible }: MotivationalCarouselProps) {
 
 // Animated loading dot component
 function LoadingDot({ delay, colors }: { delay: number; colors: any }) {
-  const [scaleAnim] = useState(new Animated.Value(0.3));
+  const scaleAnim = useRef(new Animated.Value(0.3)).current;
+  const animationRef = useRef<any>(null);
 
   useEffect(() => {
     const animate = () => {
-      Animated.sequence([
-        Animated.timing(scaleAnim, {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-        Animated.timing(scaleAnim, {
-          toValue: 0.3,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-      ]).start(() => animate());
+      animationRef.current = Animated.loop(
+        Animated.sequence([
+          Animated.timing(scaleAnim, {
+            toValue: 1,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+          Animated.timing(scaleAnim, {
+            toValue: 0.3,
+            duration: 600,
+            useNativeDriver: true,
+          }),
+        ])
+      );
+
+      const timeout = setTimeout(() => {
+        animationRef.current.start();
+      }, delay);
+
+      return () => {
+        clearTimeout(timeout);
+        if (animationRef.current) {
+          animationRef.current.stop();
+        }
+      };
     };
 
-    const timeout = setTimeout(animate, delay);
-    return () => clearTimeout(timeout);
-  }, [scaleAnim, delay]);
+    const cleanup = animate();
+    return cleanup;
+  }, []); // Removed dependencies that were causing re-renders
+
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        animationRef.current.stop();
+      }
+    };
+  }, []);
 
   return (
     <Animated.View

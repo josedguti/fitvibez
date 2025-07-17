@@ -1,6 +1,6 @@
 /**
- * Utility functions for finding exercise videos and images
- * This provides fallback visual content when OpenAI doesn't include them
+ * Utility functions for finding exercise videos
+ * This provides fallback video content when OpenAI doesn't include them
  */
 
 // Common exercise video mappings
@@ -50,40 +50,6 @@ const EXERCISE_VIDEO_DATABASE: Record<string, string> = {
   "tree pose": "https://www.youtube.com/watch?v=YgJbLQQ3yII",
 };
 
-// Common exercise image mappings
-const EXERCISE_IMAGE_DATABASE: Record<string, string> = {
-  "push-up":
-    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500",
-  pushup: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500",
-  "push up":
-    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500",
-  squat: "https://images.unsplash.com/photo-1580086319619-3ed498161c77?w=500",
-  squats: "https://images.unsplash.com/photo-1580086319619-3ed498161c77?w=500",
-  plank: "https://images.unsplash.com/photo-1549476464-37392f717541?w=500",
-  lunge: "https://images.unsplash.com/photo-1544033527-78c7e8b4b4b7?w=500",
-  lunges: "https://images.unsplash.com/photo-1544033527-78c7e8b4b4b7?w=500",
-  burpee: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500",
-  burpees: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500",
-  deadlift:
-    "https://images.unsplash.com/photo-1583454155480-14fa2323bb0a?w=500",
-  deadlifts:
-    "https://images.unsplash.com/photo-1583454155480-14fa2323bb0a?w=500",
-  "mountain climber":
-    "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500",
-  "mountain climbers":
-    "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=500",
-  "jumping jack":
-    "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500",
-  "jumping jacks":
-    "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500",
-  yoga: "https://images.unsplash.com/photo-1506629905270-11674df5d102?w=500",
-  stretching:
-    "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500",
-  dumbbell:
-    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500",
-  workout: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500",
-};
-
 /**
  * Find a suitable video URL for an exercise based on the exercise name
  */
@@ -106,51 +72,26 @@ export function findExerciseVideo(exerciseName: string): string | null {
 }
 
 /**
- * Find a suitable image URL for an exercise based on the exercise name
- */
-export function findExerciseImage(exerciseName: string): string | null {
-  const normalizedName = exerciseName.toLowerCase().trim();
-
-  // Try exact match first
-  if (EXERCISE_IMAGE_DATABASE[normalizedName]) {
-    return EXERCISE_IMAGE_DATABASE[normalizedName];
-  }
-
-  // Try partial matches
-  for (const [key, image] of Object.entries(EXERCISE_IMAGE_DATABASE)) {
-    if (normalizedName.includes(key) || key.includes(normalizedName)) {
-      return image;
-    }
-  }
-
-  // Fallback to a generic workout image
-  return "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500";
-}
-
-/**
- * Enhance exercise data with visual elements if they're missing
+ * Enhance exercise data with video elements if they're missing
  */
 export function enhanceExerciseWithVisuals(exercise: {
   name: string;
   videoUrl?: string;
-  imageUrl?: string;
   [key: string]: any;
 }) {
   return {
     ...exercise,
     videoUrl: exercise.videoUrl || findExerciseVideo(exercise.name),
-    imageUrl: exercise.imageUrl || findExerciseImage(exercise.name),
   };
 }
 
 /**
- * Enhance a full workout with visual elements for all exercises
+ * Enhance a full workout with video elements for all exercises
  */
 export function enhanceWorkoutWithVisuals(workout: {
   exercises: Array<{
     name: string;
     videoUrl?: string;
-    imageUrl?: string;
     [key: string]: any;
   }>;
   [key: string]: any;

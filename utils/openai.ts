@@ -27,9 +27,8 @@ export interface WorkoutResponse {
     duration?: string;
     restBetweenSets?: string;
     instructions: string;
-    // New visual elements
+    // Video element for exercise demonstration
     videoUrl?: string; // YouTube video URL for exercise demonstration
-    imageUrl?: string; // Image URL showing exercise form or position
   }[];
   warmup?: string;
   cooldown?: string;
@@ -183,8 +182,7 @@ function buildWorkoutPrompt(params: WorkoutParams, userProfile: any): string {
       "duration": "time duration" (if applicable for timed exercises),
       "restBetweenSets": "rest time between sets",
       "instructions": "detailed instructions on how to perform the exercise correctly",
-      "videoUrl": "a relevant YouTube video URL demonstrating proper form for this exercise (must be a valid YouTube URL)",
-      "imageUrl": "a relevant fitness image URL showing proper exercise form or position (prefer high-quality fitness demonstration images)"
+      "videoUrl": "a relevant YouTube video URL demonstrating proper form for this exercise (must be a valid YouTube URL)"
     }
   ],
   "warmup": "brief warmup routine description",

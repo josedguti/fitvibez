@@ -155,141 +155,149 @@ export default function WorkoutPreviewScreen() {
         </View>
       ) : (
         // Show normal workout content when not regenerating
-        <ScrollView
-          ref={scrollViewRef}
-          contentContainerStyle={styles.scrollContent}
-        >
+        <>
+          {/* Custom Header */}
           <View style={styles.header}>
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => router.back()}
             >
-              <Ionicons name="arrow-back" size={24} color={colors.text} />
+              <Ionicons name="chevron-back" size={24} color={colors.text} />
             </TouchableOpacity>
-            <ThemedText type="title" style={styles.title}>
-              Your Workout
-            </ThemedText>
+            <ThemedText style={styles.headerTitle}>Your Workout</ThemedText>
+            <TouchableOpacity
+              style={styles.homeButton}
+              onPress={() => router.push("/(tabs)")}
+            >
+              <Ionicons name="home" size={24} color={colors.text} />
+            </TouchableOpacity>
           </View>
 
-          {/* Workout Title */}
-          <View style={styles.workoutTitleContainer}>
-            <ThemedText style={styles.workoutTitle}>{workout.title}</ThemedText>
-            <View style={styles.difficultyBadge}>
-              <ThemedText style={styles.difficultyText}>
-                {workout.difficulty}
+          <ScrollView
+            ref={scrollViewRef}
+            contentContainerStyle={styles.scrollContent}
+          >
+            {/* Workout Title */}
+            <View style={styles.workoutTitleContainer}>
+              <ThemedText style={styles.workoutTitle}>
+                {workout.title}
               </ThemedText>
-            </View>
-          </View>
-
-          {/* Workout Description */}
-          <View style={styles.sectionContainer}>
-            <ThemedText style={styles.description}>
-              {workout.description}
-            </ThemedText>
-            <ThemedText style={styles.totalTime}>
-              Total Time: {workout.totalTime}
-            </ThemedText>
-          </View>
-
-          {/* Warmup Section */}
-          {workout.warmup && (
-            <View style={styles.sectionContainer}>
-              <ThemedText style={styles.sectionTitle}>Warm Up</ThemedText>
-              <ThemedText style={styles.sectionContent}>
-                {workout.warmup}
-              </ThemedText>
-            </View>
-          )}
-
-          {/* Exercises Section */}
-          <View style={styles.sectionContainer}>
-            <ThemedText style={styles.sectionTitle}>Exercises</ThemedText>
-            {workout.exercises.map((exercise, index) => (
-              <View key={index} style={styles.exerciseContainer}>
-                <ThemedText style={styles.exerciseName}>
-                  {index + 1}. {exercise.name}
+              <View style={styles.difficultyBadge}>
+                <ThemedText style={styles.difficultyText}>
+                  {workout.difficulty}
                 </ThemedText>
-                <View style={styles.exerciseDetails}>
-                  {exercise.sets && (
-                    <View style={styles.detailItem}>
-                      <ThemedText style={styles.detailLabel}>Sets</ThemedText>
-                      <ThemedText style={styles.detailValue}>
-                        {exercise.sets}
-                      </ThemedText>
-                    </View>
-                  )}
-                  {exercise.reps && (
-                    <View style={styles.detailItem}>
-                      <ThemedText style={styles.detailLabel}>Reps</ThemedText>
-                      <ThemedText style={styles.detailValue}>
-                        {exercise.reps}
-                      </ThemedText>
-                    </View>
-                  )}
-                  {exercise.duration && (
-                    <View style={styles.detailItem}>
-                      <ThemedText style={styles.detailLabel}>
-                        Duration
-                      </ThemedText>
-                      <ThemedText style={styles.detailValue}>
-                        {exercise.duration}
-                      </ThemedText>
-                    </View>
-                  )}
-                  {exercise.restBetweenSets && (
-                    <View style={styles.detailItem}>
-                      <ThemedText style={styles.detailLabel}>Rest</ThemedText>
-                      <ThemedText style={styles.detailValue}>
-                        {exercise.restBetweenSets}
-                      </ThemedText>
-                    </View>
-                  )}
-                </View>
-                <ThemedText style={styles.instructions}>
-                  {exercise.instructions}
-                </ThemedText>
-
-                {/* Exercise Visual Component */}
-                <ExerciseVisual
-                  videoUrl={exercise.videoUrl}
-                  imageUrl={exercise.imageUrl}
-                  exerciseName={exercise.name}
-                />
               </View>
-            ))}
-          </View>
+            </View>
 
-          {/* Cooldown Section */}
-          {workout.cooldown && (
+            {/* Workout Description */}
             <View style={styles.sectionContainer}>
-              <ThemedText style={styles.sectionTitle}>Cool Down</ThemedText>
-              <ThemedText style={styles.sectionContent}>
-                {workout.cooldown}
+              <ThemedText style={styles.description}>
+                {workout.description}
+              </ThemedText>
+              <ThemedText style={styles.totalTime}>
+                Total Time: {workout.totalTime}
               </ThemedText>
             </View>
-          )}
 
-          {/* Action Buttons */}
-          <View style={styles.actionButtonsContainer}>
-            <Button
-              title="I Like It, Let's Do It"
-              onPress={handleSaveWorkout}
-              style={styles.saveButton}
-              loading={isSaving}
-            />
-            <Button
-              title={
-                isRegenerating
-                  ? "Generating..."
-                  : "Not Feeling It, Regenerate Workout"
-              }
-              onPress={handleRegenerateWorkout}
-              variant="outline"
-              style={styles.regenerateButton}
-              loading={isRegenerating}
-            />
-          </View>
-        </ScrollView>
+            {/* Warmup Section */}
+            {workout.warmup && (
+              <View style={styles.sectionContainer}>
+                <ThemedText style={styles.sectionTitle}>Warm Up</ThemedText>
+                <ThemedText style={styles.sectionContent}>
+                  {workout.warmup}
+                </ThemedText>
+              </View>
+            )}
+
+            {/* Exercises Section */}
+            <View style={styles.sectionContainer}>
+              <ThemedText style={styles.sectionTitle}>Exercises</ThemedText>
+              {workout.exercises.map((exercise, index) => (
+                <View key={index} style={styles.exerciseContainer}>
+                  <ThemedText style={styles.exerciseName}>
+                    {index + 1}. {exercise.name}
+                  </ThemedText>
+                  <View style={styles.exerciseDetails}>
+                    {exercise.sets && (
+                      <View style={styles.detailItem}>
+                        <ThemedText style={styles.detailLabel}>Sets</ThemedText>
+                        <ThemedText style={styles.detailValue}>
+                          {exercise.sets}
+                        </ThemedText>
+                      </View>
+                    )}
+                    {exercise.reps && (
+                      <View style={styles.detailItem}>
+                        <ThemedText style={styles.detailLabel}>Reps</ThemedText>
+                        <ThemedText style={styles.detailValue}>
+                          {exercise.reps}
+                        </ThemedText>
+                      </View>
+                    )}
+                    {exercise.duration && (
+                      <View style={styles.detailItem}>
+                        <ThemedText style={styles.detailLabel}>
+                          Duration
+                        </ThemedText>
+                        <ThemedText style={styles.detailValue}>
+                          {exercise.duration}
+                        </ThemedText>
+                      </View>
+                    )}
+                    {exercise.restBetweenSets && (
+                      <View style={styles.detailItem}>
+                        <ThemedText style={styles.detailLabel}>Rest</ThemedText>
+                        <ThemedText style={styles.detailValue}>
+                          {exercise.restBetweenSets}
+                        </ThemedText>
+                      </View>
+                    )}
+                  </View>
+                  <ThemedText style={styles.instructions}>
+                    {exercise.instructions}
+                  </ThemedText>
+
+                  {/* Exercise Visual Component */}
+                  <ExerciseVisual
+                    videoUrl={exercise.videoUrl}
+                    exerciseName={exercise.name}
+                  />
+                </View>
+              ))}
+            </View>
+
+            {/* Cooldown Section */}
+            {workout.cooldown && (
+              <View style={styles.sectionContainer}>
+                <ThemedText style={styles.sectionTitle}>Cool Down</ThemedText>
+                <ThemedText style={styles.sectionContent}>
+                  {workout.cooldown}
+                </ThemedText>
+              </View>
+            )}
+
+            {/* Action Buttons */}
+            <View style={styles.actionButtonsContainer}>
+              <Button
+                title="I Like It, Let's Do It"
+                onPress={handleSaveWorkout}
+                style={styles.saveButton}
+                loading={isSaving}
+              />
+              <Button
+                title={
+                  isRegenerating
+                    ? "Generating..."
+                    : "Not Feeling It, Regenerate Workout"
+                }
+                onPress={handleRegenerateWorkout}
+                variant="outline"
+                style={styles.regenerateButton}
+                loading={isRegenerating}
+              />
+            </View>
+          </ScrollView>
+        </>
       )}
     </ThemedView>
   );
@@ -318,19 +326,22 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
-    paddingTop: 20,
-    marginTop: 20,
+    justifyContent: "space-between",
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    paddingBottom: 16,
   },
   backButton: {
     padding: 8,
   },
-  title: {
-    fontSize: 24,
+  homeButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
     fontWeight: "bold",
     flex: 1,
     textAlign: "center",
-    marginRight: 40, // To balance the back button
   },
   workoutTitleContainer: {
     flexDirection: "row",

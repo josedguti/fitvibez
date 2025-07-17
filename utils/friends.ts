@@ -10,6 +10,7 @@ export interface FriendProfile {
   height?: number;
   height_unit?: string;
   fitness_goals?: string;
+  profile_picture_url?: string;
   created_at?: string;
 }
 
@@ -267,7 +268,7 @@ export async function getFriendWorkoutHistory(
       .from("workout_history")
       .select("*")
       .eq("user_id", friendId)
-      .eq("completed", true)
+      // Remove the completed filter to show all workouts
       .order("created_at", { ascending: false })
       .limit(20);
 

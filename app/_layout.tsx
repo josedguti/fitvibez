@@ -31,6 +31,7 @@ export default function RootLayout() {
         <Stack.Screen name="profile-setup" options={{ headerShown: false }} />
         <Stack.Screen name="workout-builder" options={{ headerShown: false }} />
         <Stack.Screen name="workout-detail" options={{ headerShown: false }} />
+        <Stack.Screen name="friend-profile" options={{ headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

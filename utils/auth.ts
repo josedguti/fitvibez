@@ -15,6 +15,7 @@ export interface UserProfile {
   fitness_level?: string;
   fitness_goals?: string;
   injuries?: string;
+  profile_picture_url?: string;
   created_at: string;
   updated_at: string;
 }
@@ -327,4 +328,129 @@ export async function requireAuth(showAlert: boolean = true): Promise<boolean> {
   }
 
   return true;
+}
+
+/**
+ * Upload profile picture to Supabase storage
+ */
+export async function uploadProfilePicture(imageUri: string) {
+  try {
+    const { data: session } = await supabase.auth.getSession();
+    if (!session.session) {
+      throw new Error("Not authenticated");
+    }
+
+    const userId = session.session.user.id;
+
+    // Convert image URI to blob
+    const response = await fetch(imageUri);
+    const blob = await response.blob();
+
+    // Create file name with timestamp to avoid conflicts
+    const timestamp = new Date().getTime();
+    const fileName = `${userId}/profile-picture-${timestamp}.jpg`;
+
+    // Delete existing profile picture if it exists
+    await deleteExistingProfilePicture(userId);
+
+    // Upload new image
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from("profile-pictures")
+      .upload(fileName, blob, {
+        contentType: "image/jpeg",
+        upsert: true,
+      });
+
+    if (uploadError) {
+      throw uploadError;
+    }
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from("profile-pictures")
+      .getPublicUrl(fileName);
+
+    const publicUrl = urlData.publicUrl;
+
+    // Update profile with new picture URL
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({
+        profile_picture_url: publicUrl,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", userId);
+
+    if (updateError) {
+      throw updateError;
+    }
+
+    return { profilePictureUrl: publicUrl, error: null };
+  } catch (error) {
+    console.error("Error uploading profile picture:", error);
+    return { profilePictureUrl: null, error: error as Error };
+  }
+}
+
+/**
+ * Delete existing profile picture from storage
+ */
+async function deleteExistingProfilePicture(userId: string) {
+  try {
+    // List files in user's folder
+    const { data: files, error: listError } = await supabase.storage
+      .from("profile-pictures")
+      .list(userId);
+
+    if (listError || !files || files.length === 0) {
+      return; // No existing files to delete
+    }
+
+    // Delete all files in the user's folder
+    const filePaths = files.map((file) => `${userId}/${file.name}`);
+    const { error: deleteError } = await supabase.storage
+      .from("profile-pictures")
+      .remove(filePaths);
+
+    if (deleteError) {
+      console.error("Error deleting existing profile pictures:", deleteError);
+    }
+  } catch (error) {
+    console.error("Error in deleteExistingProfilePicture:", error);
+  }
+}
+
+/**
+ * Delete profile picture and update profile
+ */
+export async function deleteProfilePicture() {
+  try {
+    const { data: session } = await supabase.auth.getSession();
+    if (!session.session) {
+      throw new Error("Not authenticated");
+    }
+
+    const userId = session.session.user.id;
+
+    // Delete from storage
+    await deleteExistingProfilePicture(userId);
+
+    // Update profile to remove picture URL
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({
+        profile_picture_url: null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", userId);
+
+    if (updateError) {
+      throw updateError;
+    }
+
+    return { error: null };
+  } catch (error) {
+    console.error("Error deleting profile picture:", error);
+    return { error: error as Error };
+  }
 }

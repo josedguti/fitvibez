@@ -63,19 +63,24 @@ export default function MuscleFocusScreen() {
         style={styles.background}
       />
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Ionicons name="arrow-back" size={24} color={colors.text} />
-          </TouchableOpacity>
-          <ThemedText type="title" style={styles.title}>
-            Workout Builder
-          </ThemedText>
-        </View>
+      {/* Custom Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Ionicons name="chevron-back" size={24} color={colors.text} />
+        </TouchableOpacity>
+        <ThemedText style={styles.headerTitle}>Workout Builder</ThemedText>
+        <TouchableOpacity
+          style={styles.homeButton}
+          onPress={() => router.push("/(tabs)")}
+        >
+          <Ionicons name="home" size={24} color={colors.text} />
+        </TouchableOpacity>
+      </View>
 
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         <ThemedText style={styles.questionText}>
           Which muscle groups would you like to focus on?
         </ThemedText>
@@ -161,18 +166,22 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingTop: 60,
-    paddingBottom: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 16,
   },
   backButton: {
     padding: 8,
   },
-  title: {
-    fontSize: 24,
+  homeButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
     fontWeight: "bold",
     flex: 1,
     textAlign: "center",
-    marginRight: 40, // To center the title accounting for back button
   },
   questionText: {
     fontSize: 18,

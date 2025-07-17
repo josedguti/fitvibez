@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import React, { useCallback, useState } from "react";
@@ -66,7 +67,7 @@ export default function FriendProfileScreen() {
       const { data, error } = await supabase
         .from("profiles")
         .select(
-          "id, username, sex, date_of_birth, weight, weight_unit, height, height_unit, fitness_goals"
+          "id, username, sex, date_of_birth, weight, weight_unit, height, height_unit, fitness_goals, profile_picture_url"
         )
         .eq("id", friendId)
         .single();
@@ -131,52 +132,188 @@ export default function FriendProfileScreen() {
     );
   };
 
+  // Helper function to format dates nicely
+  const formatWorkoutDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInDays = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    if (diffInDays === 0) return "Today";
+    if (diffInDays === 1) return "Yesterday";
+    if (diffInDays < 7) return `${diffInDays} days ago`;
+
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
+    });
+  };
+
+  // Helper function to get readable workout type
+  const getReadableWorkoutType = (type: string) => {
+    const types: { [key: string]: string } = {
+      strength: "Strength Training",
+      cardio: "Cardio",
+      hiit: "HIIT",
+      flexibility: "Flexibility",
+      both: "Strength & Cardio",
+      "full-body": "Full Body",
+    };
+    return types[type] || type.charAt(0).toUpperCase() + type.slice(1);
+  };
+
+  // Helper function to get readable muscle focus
+  const getReadableMuscleFocus = (focus: string) => {
+    const focuses: { [key: string]: string } = {
+      "full-body": "Full Body",
+      "upper-body": "Upper Body",
+      "lower-body": "Lower Body",
+      core: "Core",
+    };
+    return focuses[focus] || focus.charAt(0).toUpperCase() + focus.slice(1);
+  };
+
+  // Helper function to get equipment display
+  const getEquipmentDisplay = (equipment: string) => {
+    const equipmentMap: { [key: string]: string } = {
+      none: "No Equipment",
+      dumbbells: "Dumbbells",
+      kettlebells: "Kettlebells",
+      bands: "Resistance Bands",
+      "full-gym": "Full Gym",
+      "yoga-mat": "Yoga Mat",
+    };
+    return (
+      equipmentMap[equipment] ||
+      equipment.charAt(0).toUpperCase() + equipment.slice(1)
+    );
+  };
+
   const renderWorkoutItem = ({ item }: { item: any }) => (
-    <View
-      style={[styles.workoutItem, { backgroundColor: colors.cardBackground }]}
+    <TouchableOpacity
+      style={[
+        styles.workoutItem,
+        {
+          backgroundColor: colorScheme === "dark" ? "#3D3D4D" : "#FFFFFF",
+          borderLeftWidth: 4,
+          borderLeftColor: item.completed ? "#4BB543" : colors.primary,
+        },
+      ]}
+      onPress={() => {
+        // You can add navigation to workout detail if desired
+        // router.push({ pathname: "/workout-detail", params: { workoutData: JSON.stringify(item.workout_data) }});
+      }}
     >
       <View style={styles.workoutHeader}>
-        <ThemedText style={styles.workoutType}>
-          {item.workout_type?.charAt(0).toUpperCase() +
-            item.workout_type?.slice(1) || "Workout"}
-        </ThemedText>
+        <View style={styles.workoutTitleSection}>
+          <ThemedText style={styles.workoutTitle}>
+            {item.workout_data?.title ||
+              getReadableWorkoutType(item.workout_type)}
+          </ThemedText>
+          {item.completed && (
+            <View style={styles.completedBadge}>
+              <Ionicons name="checkmark-circle" size={16} color="#4BB543" />
+              <ThemedText style={styles.completedText}>Completed</ThemedText>
+            </View>
+          )}
+        </View>
         <ThemedText style={styles.workoutDate}>
-          {new Date(item.created_at).toLocaleDateString()}
+          {formatWorkoutDate(item.created_at)}
         </ThemedText>
       </View>
 
-      <View style={styles.workoutDetails}>
-        <View style={styles.workoutTag}>
-          <Ionicons name="time-outline" size={14} color={colors.primary} />
-          <ThemedText style={styles.workoutTagText}>
-            {item.time_available}
+      {item.workout_data?.description && (
+        <ThemedText style={styles.workoutDescription} numberOfLines={2}>
+          {item.workout_data.description}
+        </ThemedText>
+      )}
+
+      <View style={styles.workoutMetrics}>
+        <View style={styles.metricItem}>
+          <Ionicons name="time-outline" size={16} color={colors.primary} />
+          <ThemedText style={styles.metricText}>
+            {item.workout_data?.totalTime || `${item.time_available} min`}
           </ThemedText>
         </View>
-        <View style={styles.workoutTag}>
-          <Ionicons name="fitness-outline" size={14} color={colors.primary} />
-          <ThemedText style={styles.workoutTagText}>
-            {item.muscle_focus}
+
+        <View style={styles.metricItem}>
+          <Ionicons name="body-outline" size={16} color={colors.primary} />
+          <ThemedText style={styles.metricText}>
+            {getReadableMuscleFocus(item.muscle_focus)}
           </ThemedText>
         </View>
-        <View style={styles.workoutTag}>
+
+        <View style={styles.metricItem}>
+          <Ionicons name="barbell-outline" size={16} color={colors.primary} />
+          <ThemedText style={styles.metricText}>
+            {getEquipmentDisplay(item.equipment)}
+          </ThemedText>
+        </View>
+      </View>
+
+      <View style={styles.workoutTags}>
+        <View
+          style={[
+            styles.workoutTag,
+            { backgroundColor: colors.primary + "15" },
+          ]}
+        >
           <Ionicons name="happy-outline" size={14} color={colors.primary} />
-          <ThemedText style={styles.workoutTagText}>{item.mood}</ThemedText>
+          <ThemedText
+            style={[styles.workoutTagText, { color: colors.primary }]}
+          >
+            {item.mood.charAt(0).toUpperCase() + item.mood.slice(1)}
+          </ThemedText>
         </View>
+
+        {item.workout_data?.difficulty && (
+          <View
+            style={[
+              styles.workoutTag,
+              { backgroundColor: colors.accent + "15" },
+            ]}
+          >
+            <Ionicons
+              name="trending-up-outline"
+              size={14}
+              color={colors.accent}
+            />
+            <ThemedText
+              style={[styles.workoutTagText, { color: colors.accent }]}
+            >
+              {item.workout_data.difficulty}
+            </ThemedText>
+          </View>
+        )}
+
+        {item.workout_data?.exercises && (
+          <View
+            style={[styles.workoutTag, { backgroundColor: colors.text + "10" }]}
+          >
+            <Ionicons name="list-outline" size={14} color={colors.text} />
+            <ThemedText style={[styles.workoutTagText, { color: colors.text }]}>
+              {item.workout_data.exercises.length} exercises
+            </ThemedText>
+          </View>
+        )}
       </View>
 
       {item.rating && (
         <View style={styles.rating}>
+          <ThemedText style={styles.ratingLabel}>Rating:</ThemedText>
           {[1, 2, 3, 4, 5].map((star) => (
             <Ionicons
               key={star}
               name={star <= item.rating ? "star" : "star-outline"}
               size={16}
-              color={colors.accent}
+              color="#FFD700"
             />
           ))}
         </View>
       )}
-    </View>
+    </TouchableOpacity>
   );
 
   if (isLoading) {
@@ -260,7 +397,7 @@ export default function FriendProfileScreen() {
         style={styles.background}
       />
 
-      {/* Header with navigation */}
+      {/* Custom Header */}
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backButton}
@@ -268,8 +405,8 @@ export default function FriendProfileScreen() {
         >
           <Ionicons name="chevron-back" size={24} color={colors.text} />
         </TouchableOpacity>
-        <ThemedText type="title" style={styles.headerTitle}>
-          {friendProfile.username}
+        <ThemedText style={styles.headerTitle}>
+          {friendProfile?.username || "Friend Profile"}
         </ThemedText>
         <TouchableOpacity
           style={styles.homeButton}
@@ -283,19 +420,30 @@ export default function FriendProfileScreen() {
         {/* Profile Section */}
         <View style={styles.profileContainer}>
           <View style={styles.avatarContainer}>
-            <View
-              style={[
-                styles.avatar,
-                {
-                  backgroundColor:
-                    colorScheme === "dark" ? "#4D4D5D" : "#FFE5E5",
-                },
-              ]}
-            >
-              <ThemedText style={styles.avatarText}>
-                {friendProfile.username?.charAt(0).toUpperCase() || "U"}
-              </ThemedText>
-            </View>
+            {friendProfile.profile_picture_url ? (
+              <Image
+                source={{
+                  uri: `${friendProfile.profile_picture_url}?t=${Date.now()}`,
+                }}
+                style={styles.avatar}
+                contentFit="cover"
+                cachePolicy="none"
+              />
+            ) : (
+              <View
+                style={[
+                  styles.avatar,
+                  {
+                    backgroundColor:
+                      colorScheme === "dark" ? "#4D4D5D" : "#FFE5E5",
+                  },
+                ]}
+              >
+                <ThemedText style={styles.avatarText}>
+                  {friendProfile.username?.charAt(0).toUpperCase() || "U"}
+                </ThemedText>
+              </View>
+            )}
             <ThemedText style={styles.username}>
               {friendProfile.username}
             </ThemedText>
@@ -578,25 +726,70 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   workoutItem: {
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
-    marginBottom: 12,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   workoutHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
+    alignItems: "flex-start",
+    marginBottom: 8,
   },
-  workoutType: {
-    fontSize: 16,
-    fontWeight: "600",
+  workoutTitleSection: {
+    flex: 1,
+    marginRight: 12,
+  },
+  workoutTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  completedBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  completedText: {
+    fontSize: 12,
+    color: "#4BB543",
+    fontWeight: "500",
   },
   workoutDate: {
     fontSize: 14,
     opacity: 0.7,
+    fontWeight: "500",
   },
-  workoutDetails: {
+  workoutDescription: {
+    fontSize: 14,
+    opacity: 0.8,
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+  workoutMetrics: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "rgba(255, 107, 107, 0.05)",
+    borderRadius: 12,
+  },
+  metricItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  metricText: {
+    fontSize: 13,
+    fontWeight: "500",
+  },
+  workoutTags: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
@@ -605,20 +798,28 @@ const styles = StyleSheet.create({
   workoutTag: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255, 107, 107, 0.1)",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
     gap: 4,
   },
   workoutTagText: {
     fontSize: 12,
-    color: undefined,
+    fontWeight: "500",
   },
   rating: {
     flexDirection: "row",
-    gap: 2,
-    marginTop: 4,
+    alignItems: "center",
+    gap: 4,
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(0, 0, 0, 0.1)",
+  },
+  ratingLabel: {
+    fontSize: 14,
+    fontWeight: "500",
+    marginRight: 4,
   },
   emptyContainer: {
     alignItems: "center",

@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
@@ -16,16 +17,23 @@ import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import {
+  deleteProfilePicture,
   getUserProfile,
   requireAuth,
   signOut,
+  uploadProfilePicture,
   UserProfile,
 } from "@/utils/auth";
+import {
+  showDeleteConfirmation,
+  showImagePickerOptions,
+} from "@/utils/imagePicker";
 
 export default function ProfileScreen() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
 
@@ -111,6 +119,100 @@ export default function ProfileScreen() {
     router.push("/login");
   };
 
+  const handleChangePhoto = async () => {
+    if (profile?.profile_picture_url) {
+      // User has a profile picture, show options to change or delete
+      Alert.alert("Profile Picture", "What would you like to do?", [
+        {
+          text: "Change Photo",
+          onPress: handleSelectNewPhoto,
+        },
+        {
+          text: "Delete Photo",
+          style: "destructive",
+          onPress: handleDeletePhoto,
+        },
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+      ]);
+    } else {
+      // No profile picture, directly show picker
+      handleSelectNewPhoto();
+    }
+  };
+
+  const handleSelectNewPhoto = async () => {
+    try {
+      setIsUploadingImage(true);
+
+      const result = await showImagePickerOptions();
+
+      if (result.cancelled || !result.uri) {
+        if (result.error) {
+          Alert.alert("Error", result.error);
+        }
+        return;
+      }
+
+      // Upload the image
+      const { profilePictureUrl, error } = await uploadProfilePicture(
+        result.uri
+      );
+
+      if (error) {
+        Alert.alert(
+          "Upload Error",
+          "Failed to upload profile picture. Please try again."
+        );
+        return;
+      }
+
+      // Refresh profile data from database to get the updated picture URL
+      await checkAuthAndLoadProfile();
+
+      Alert.alert("Success", "Profile picture updated successfully!");
+    } catch (error) {
+      console.error("Error changing photo:", error);
+      Alert.alert("Error", "An unexpected error occurred. Please try again.");
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
+  const handleDeletePhoto = async () => {
+    try {
+      const confirmed = await showDeleteConfirmation();
+
+      if (!confirmed) {
+        return;
+      }
+
+      setIsUploadingImage(true);
+
+      const { error } = await deleteProfilePicture();
+
+      if (error) {
+        Alert.alert(
+          "Delete Error",
+          "Failed to delete profile picture. Please try again."
+        );
+        return;
+      }
+
+      // Refresh profile data from database to remove the picture URL
+      await checkAuthAndLoadProfile();
+
+      Alert.alert("Success", "Profile picture deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting photo:", error);
+      Alert.alert("Error", "An unexpected error occurred. Please try again.");
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <ThemedView style={[styles.container, styles.loadingContainer]}>
@@ -191,33 +293,40 @@ export default function ProfileScreen() {
 
         <View style={styles.profileContainer}>
           <View style={styles.avatarContainer}>
-            <View
-              style={[
-                styles.avatar,
-                {
-                  backgroundColor:
-                    colorScheme === "dark" ? "#4D4D5D" : "#FFE5E5",
-                },
-              ]}
-            >
-              <ThemedText style={styles.avatarText}>
-                {profile.username
-                  ? profile.username.charAt(0).toUpperCase()
-                  : "U"}
-              </ThemedText>
-            </View>
+            {profile.profile_picture_url ? (
+              <Image
+                source={{
+                  uri: `${profile.profile_picture_url}?t=${Date.now()}`,
+                }}
+                style={styles.avatar}
+                contentFit="cover"
+                cachePolicy="none"
+              />
+            ) : (
+              <View
+                style={[
+                  styles.avatar,
+                  {
+                    backgroundColor:
+                      colorScheme === "dark" ? "#4D4D5D" : "#FFE5E5",
+                  },
+                ]}
+              >
+                <ThemedText style={styles.avatarText}>
+                  {profile.username
+                    ? profile.username.charAt(0).toUpperCase()
+                    : "U"}
+                </ThemedText>
+              </View>
+            )}
             <TouchableOpacity
               style={styles.editAvatarButton}
-              onPress={() =>
-                Alert.alert(
-                  "Coming Soon",
-                  "Profile picture upload will be available in a future update."
-                )
-              }
+              onPress={handleChangePhoto}
+              disabled={isUploadingImage}
             >
               <Ionicons name="camera" size={16} color={colors.primary} />
               <ThemedText style={styles.editAvatarText}>
-                Change Photo
+                {isUploadingImage ? "Uploading..." : "Change Photo"}
               </ThemedText>
             </TouchableOpacity>
             <ThemedText style={styles.username}>{profile.username}</ThemedText>

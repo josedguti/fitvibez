@@ -3,7 +3,7 @@ import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 
-import FitGirlyLogo from "@/assets/images/fitgirly-logo";
+import VibeFitLogo from "@/assets/images/vibefit-logo";
 import { Button } from "@/components/Button";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -72,14 +72,14 @@ export default function HomeScreen() {
         {/* Logo Circle with Background */}
         <View style={styles.logoCircleContainer}>
           <View style={styles.logoCircle}>
-            <FitGirlyLogo width={width * 0.25} height={width * 0.25} />
+            <VibeFitLogo width={width * 0.25} height={width * 0.25} />
           </View>
         </View>
 
         {/* App Name and Tagline */}
         <View style={styles.titleContainer}>
           <ThemedText type="title" style={styles.title}>
-            FitGirly
+            VibeFit
           </ThemedText>
           <ThemedText style={styles.subtitle}>
             Your personal AI workout assistant
@@ -110,24 +110,16 @@ export default function HomeScreen() {
             <>
               {isAuthenticated ? (
                 <Button
-                  title="Let's Build Our Workout For Today"
+                  title="Build Today's Workout"
                   onPress={handleCreateWorkout}
                   style={styles.button}
                 />
               ) : (
-                <>
-                  <Button
-                    title="Login to Continue"
-                    onPress={handleLogin}
-                    style={styles.button}
-                  />
-                  <Button
-                    title="Create Account"
-                    onPress={handleSignup}
-                    variant="outline"
-                    style={styles.button}
-                  />
-                </>
+                <Button
+                  title="Get Started"
+                  onPress={handleLogin}
+                  style={styles.button}
+                />
               )}
             </>
           )}

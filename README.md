@@ -1,4 +1,4 @@
-# Fitgirly - Personalized Workout App
+# VibeFit - Personalized Workout App
 
 A mobile application that generates personalized workout routines based on user preferences using OpenAI's API. Built with Expo and React Native.
 
@@ -21,7 +21,7 @@ A mobile application that generates personalized workout routines based on user 
 
    ```bash
    git clone <repository-url>
-   cd fitgirly
+   cd vibefit
    ```
 
 2. Install dependencies

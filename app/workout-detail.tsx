@@ -72,19 +72,24 @@ export default function WorkoutDetailScreen() {
         style={styles.background}
       />
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <Ionicons name="arrow-back" size={24} color={colors.text} />
-          </TouchableOpacity>
-          <ThemedText type="title" style={styles.title}>
-            Your Workout
-          </ThemedText>
-        </View>
+      {/* Custom Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
+          <Ionicons name="chevron-back" size={24} color={colors.text} />
+        </TouchableOpacity>
+        <ThemedText style={styles.headerTitle}>Your Workout</ThemedText>
+        <TouchableOpacity
+          style={styles.homeButton}
+          onPress={() => router.push("/(tabs)")}
+        >
+          <Ionicons name="home" size={24} color={colors.text} />
+        </TouchableOpacity>
+      </View>
 
+      <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Workout Title */}
         <View style={styles.workoutTitleContainer}>
           <ThemedText style={styles.workoutTitle}>{workout.title}</ThemedText>
@@ -164,7 +169,6 @@ export default function WorkoutDetailScreen() {
               {/* Exercise Visual Component */}
               <ExerciseVisual
                 videoUrl={exercise.videoUrl}
-                imageUrl={exercise.imageUrl}
                 exerciseName={exercise.name}
               />
             </View>
@@ -192,7 +196,7 @@ export default function WorkoutDetailScreen() {
             title="Go Home"
             onPress={handleGoHome}
             variant="outline"
-            style={styles.homeButton}
+            style={styles.homeActionButton}
           />
         </View>
       </ScrollView>
@@ -219,23 +223,27 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 20,
     paddingBottom: 40,
-    paddingTop: 60, // Add extra padding at the top to replace the header space
+    paddingTop: 20,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
-    marginTop: 10,
+    justifyContent: "space-between",
+    paddingTop: 60,
+    paddingHorizontal: 20,
+    paddingBottom: 16,
   },
   backButton: {
     padding: 8,
   },
-  title: {
-    fontSize: 24,
+  homeButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 20,
     fontWeight: "bold",
     flex: 1,
     textAlign: "center",
-    marginRight: 40, // To balance the back button
   },
   workoutTitleContainer: {
     flexDirection: "row",
@@ -323,7 +331,7 @@ const styles = StyleSheet.create({
   saveButton: {
     width: "100%",
   },
-  homeButton: {
+  homeActionButton: {
     width: "100%",
   },
 });

@@ -1,13 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import React, { useState } from "react";
-import {
-  Alert,
-  Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Dimensions, StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
 
 import { Colors } from "@/constants/Colors";
@@ -16,17 +9,13 @@ import { ThemedText } from "./ThemedText";
 
 interface ExerciseVisualProps {
   videoUrl?: string;
-  imageUrl?: string;
   exerciseName: string;
 }
 
 export function ExerciseVisual({
   videoUrl,
-  imageUrl,
   exerciseName,
 }: ExerciseVisualProps) {
-  const [showVideo, setShowVideo] = useState(false);
-  const [imageError, setImageError] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
@@ -56,16 +45,16 @@ export function ExerciseVisual({
     );
   };
 
-  const handleImageError = () => {
-    setImageError(true);
-  };
-
-  // If no visual content is available, return null
-  if ((!videoUrl || videoError) && (!imageUrl || imageError)) {
+  // If no video is available or there's an error, return null
+  if (!videoUrl || videoError) {
     return null;
   }
 
-  const embedUrl = videoUrl ? getEmbedUrl(videoUrl) : null;
+  const embedUrl = getEmbedUrl(videoUrl);
+
+  if (!embedUrl) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
@@ -73,55 +62,15 @@ export function ExerciseVisual({
         <ThemedText style={styles.headerText}>
           Exercise Demonstration
         </ThemedText>
-        <View style={styles.toggleContainer}>
-          {imageUrl && !imageError && (
-            <TouchableOpacity
-              style={[
-                styles.toggleButton,
-                !showVideo && styles.toggleButtonActive,
-                { borderColor: colors.primary },
-              ]}
-              onPress={() => setShowVideo(false)}
-            >
-              <Ionicons
-                name="image-outline"
-                size={16}
-                color={!showVideo ? "white" : colors.primary}
-              />
-              <ThemedText
-                style={[
-                  styles.toggleText,
-                  { color: !showVideo ? "white" : colors.primary },
-                ]}
-              >
-                Image
-              </ThemedText>
-            </TouchableOpacity>
-          )}
-          {embedUrl && !videoError && (
-            <TouchableOpacity
-              style={[
-                styles.toggleButton,
-                showVideo && styles.toggleButtonActive,
-                { borderColor: colors.primary },
-              ]}
-              onPress={() => setShowVideo(true)}
-            >
-              <Ionicons
-                name="play-outline"
-                size={16}
-                color={showVideo ? "white" : colors.primary}
-              />
-              <ThemedText
-                style={[
-                  styles.toggleText,
-                  { color: showVideo ? "white" : colors.primary },
-                ]}
-              >
-                Video
-              </ThemedText>
-            </TouchableOpacity>
-          )}
+        <View style={styles.videoIconContainer}>
+          <Ionicons
+            name="play-circle-outline"
+            size={20}
+            color={colors.primary}
+          />
+          <ThemedText style={[styles.videoLabel, { color: colors.primary }]}>
+            Video
+          </ThemedText>
         </View>
       </View>
 
@@ -134,39 +83,17 @@ export function ExerciseVisual({
           },
         ]}
       >
-        {showVideo && embedUrl && !videoError ? (
-          <WebView
-            source={{ uri: embedUrl }}
-            style={[styles.video, { width: width - 80 }]}
-            onError={handleVideoError}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-            startInLoadingState={true}
-            scalesPageToFit={true}
-            allowsInlineMediaPlayback={true}
-            mediaPlaybackRequiresUserAction={false}
-          />
-        ) : imageUrl && !imageError ? (
-          <Image
-            source={{ uri: imageUrl }}
-            style={[styles.image, { width: width - 80 }]}
-            contentFit="contain"
-            onError={handleImageError}
-            placeholder="Loading exercise image..."
-          />
-        ) : (
-          <View style={styles.fallbackContainer}>
-            <Ionicons
-              name="fitness-outline"
-              size={48}
-              color={colors.primary}
-              style={{ opacity: 0.5 }}
-            />
-            <ThemedText style={styles.fallbackText}>
-              Visual guide not available
-            </ThemedText>
-          </View>
-        )}
+        <WebView
+          source={{ uri: embedUrl }}
+          style={[styles.video, { width: width - 80 }]}
+          onError={handleVideoError}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          startInLoadingState={true}
+          scalesPageToFit={true}
+          allowsInlineMediaPlayback={true}
+          mediaPlaybackRequiresUserAction={false}
+        />
       </View>
     </View>
   );
@@ -186,24 +113,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  toggleContainer: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  toggleButton: {
+  videoIconContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    borderWidth: 1,
     gap: 4,
   },
-  toggleButtonActive: {
-    backgroundColor: "#FF6B6B",
-    borderColor: "#FF6B6B",
-  },
-  toggleText: {
+  videoLabel: {
     fontSize: 12,
     fontWeight: "500",
   },
@@ -216,21 +131,5 @@ const styles = StyleSheet.create({
   video: {
     height: 200,
     borderRadius: 8,
-  },
-  image: {
-    height: 200,
-    borderRadius: 8,
-  },
-  fallbackContainer: {
-    height: 200,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
-  fallbackText: {
-    marginTop: 8,
-    fontSize: 14,
-    opacity: 0.7,
-    textAlign: "center",
   },
 });
