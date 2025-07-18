@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useState } from "react";
@@ -157,16 +158,27 @@ export default function FriendsScreen() {
         })
       }
     >
-      <View
-        style={[
-          styles.friendAvatar,
-          { backgroundColor: colorScheme === "dark" ? "#4D4D5D" : "#FFE5E5" },
-        ]}
-      >
-        <ThemedText style={styles.friendAvatarText}>
-          {item.friend_profile?.username?.charAt(0).toUpperCase() || "U"}
-        </ThemedText>
-      </View>
+      {item.friend_profile?.profile_picture_url ? (
+        <Image
+          source={{
+            uri: `${item.friend_profile.profile_picture_url}?t=${Date.now()}`,
+          }}
+          style={styles.friendAvatar}
+          contentFit="cover"
+          cachePolicy="none"
+        />
+      ) : (
+        <View
+          style={[
+            styles.friendAvatar,
+            { backgroundColor: colorScheme === "dark" ? "#4D4D5D" : "#FFE5E5" },
+          ]}
+        >
+          <ThemedText style={styles.friendAvatarText}>
+            {item.friend_profile?.username?.charAt(0).toUpperCase() || "U"}
+          </ThemedText>
+        </View>
+      )}
       <View style={styles.friendInfo}>
         <ThemedText style={styles.friendName}>
           {item.friend_profile?.username}
@@ -189,16 +201,27 @@ export default function FriendsScreen() {
 
   const renderFriendRequestItem = ({ item }: { item: FriendRequest }) => (
     <View style={[styles.requestItem, { borderBottomColor: colors.border }]}>
-      <View
-        style={[
-          styles.friendAvatar,
-          { backgroundColor: colorScheme === "dark" ? "#4D4D5D" : "#FFE5E5" },
-        ]}
-      >
-        <ThemedText style={styles.friendAvatarText}>
-          {item.sender_profile?.username?.charAt(0).toUpperCase() || "U"}
-        </ThemedText>
-      </View>
+      {item.sender_profile?.profile_picture_url ? (
+        <Image
+          source={{
+            uri: `${item.sender_profile.profile_picture_url}?t=${Date.now()}`,
+          }}
+          style={styles.friendAvatar}
+          contentFit="cover"
+          cachePolicy="none"
+        />
+      ) : (
+        <View
+          style={[
+            styles.friendAvatar,
+            { backgroundColor: colorScheme === "dark" ? "#4D4D5D" : "#FFE5E5" },
+          ]}
+        >
+          <ThemedText style={styles.friendAvatarText}>
+            {item.sender_profile?.username?.charAt(0).toUpperCase() || "U"}
+          </ThemedText>
+        </View>
+      )}
       <View style={styles.requestInfo}>
         <ThemedText style={styles.friendName}>
           {item.sender_profile?.username}
@@ -231,16 +254,27 @@ export default function FriendsScreen() {
     <View
       style={[styles.searchResultItem, { borderBottomColor: colors.border }]}
     >
-      <View
-        style={[
-          styles.friendAvatar,
-          { backgroundColor: colorScheme === "dark" ? "#4D4D5D" : "#FFE5E5" },
-        ]}
-      >
-        <ThemedText style={styles.friendAvatarText}>
-          {item.username?.charAt(0).toUpperCase() || "U"}
-        </ThemedText>
-      </View>
+      {item.profile_picture_url ? (
+        <Image
+          source={{
+            uri: `${item.profile_picture_url}?t=${Date.now()}`,
+          }}
+          style={styles.friendAvatar}
+          contentFit="cover"
+          cachePolicy="none"
+        />
+      ) : (
+        <View
+          style={[
+            styles.friendAvatar,
+            { backgroundColor: colorScheme === "dark" ? "#4D4D5D" : "#FFE5E5" },
+          ]}
+        >
+          <ThemedText style={styles.friendAvatarText}>
+            {item.username?.charAt(0).toUpperCase() || "U"}
+          </ThemedText>
+        </View>
+      )}
       <View style={styles.friendInfo}>
         <ThemedText style={styles.friendName}>{item.username}</ThemedText>
         <ThemedText style={styles.friendDetails}>
@@ -268,8 +302,8 @@ export default function FriendsScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#2D2D3A", "#3D3D4D"]
-              : ["#FFF5F7", "#FFF"]
+              ? ["#1a1a2e", "#16213e", "#0f3460"]
+              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
           }
           style={styles.background}
         />
@@ -284,8 +318,8 @@ export default function FriendsScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#2D2D3A", "#3D3D4D"]
-              : ["#FFF5F7", "#FFF"]
+              ? ["#1a1a2e", "#16213e", "#0f3460"]
+              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
           }
           style={styles.background}
         />
@@ -310,7 +344,9 @@ export default function FriendsScreen() {
     <ThemedView style={styles.container}>
       <LinearGradient
         colors={
-          colorScheme === "dark" ? ["#2D2D3A", "#3D3D4D"] : ["#FFF5F7", "#FFF"]
+          colorScheme === "dark"
+            ? ["#1a1a2e", "#16213e", "#0f3460"]
+            : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
         }
         style={styles.background}
       />
@@ -489,6 +525,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 16,
     textAlign: "center",
+    color: "white",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   subtitle: {
     fontSize: 18,

@@ -1,7 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
 
 import VibeFitLogo from "@/assets/images/vibefit-logo";
 import { Button } from "@/components/Button";
@@ -63,81 +63,204 @@ export default function HomeScreen() {
     <ThemedView style={styles.container}>
       <LinearGradient
         colors={
-          colorScheme === "dark" ? ["#2D2D3A", "#3D3D4D"] : ["#FFF5F7", "#FFF"]
+          colorScheme === "dark"
+            ? ["#1a1a2e", "#16213e", "#0f3460"]
+            : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
         }
         style={styles.background}
       />
 
-      <View style={styles.content}>
-        {/* Logo Circle with Background */}
-        <View style={styles.logoCircleContainer}>
-          <View style={styles.logoCircle}>
-            <VibeFitLogo width={width * 0.25} height={width * 0.25} />
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header Section */}
+        <View style={styles.headerSection}>
+          {/* Logo with enhanced styling */}
+          <View style={styles.logoContainer}>
+            <LinearGradient
+              colors={["rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0.05)"]}
+              style={styles.logoCircle}
+            >
+              <VibeFitLogo width={width * 0.22} height={width * 0.22} />
+            </LinearGradient>
+          </View>
+
+          {/* Welcome Text */}
+          <View style={styles.welcomeContainer}>
+            <ThemedText style={styles.welcomeEmoji}>💪✨</ThemedText>
+            <ThemedText style={styles.welcomeText}>
+              {isAuthenticated ? "Ready to Crush It?" : "Welcome to VibeFit!"}
+            </ThemedText>
+            <ThemedText style={styles.tagline}>
+              🚀 Your AI-powered fitness companion that adapts to your mood,
+              time, and goals
+            </ThemedText>
           </View>
         </View>
 
-        {/* App Name and Tagline */}
-        <View style={styles.titleContainer}>
-          <ThemedText type="title" style={styles.title}>
-            VibeFit
-          </ThemedText>
-          <ThemedText style={styles.subtitle}>
-            Your personal AI workout assistant
-          </ThemedText>
+        {/* Stats Section */}
+        <View style={styles.statsSection}>
+          <StatCard
+            emoji="🔥"
+            title="Powered by AI"
+            subtitle="Smart workouts"
+            colorScheme={colorScheme}
+          />
+          <StatCard
+            emoji="⏱️"
+            title="Any Duration"
+            subtitle="10-120 minutes"
+            colorScheme={colorScheme}
+          />
+          <StatCard
+            emoji="🎯"
+            title="Your Goals"
+            subtitle="Personalized"
+            colorScheme={colorScheme}
+          />
         </View>
 
-        {/* Features Box with Dark Background */}
-        <View
-          style={[
-            styles.featureContainer,
-            {
-              backgroundColor:
-                colorScheme === "dark"
-                  ? "rgba(45, 45, 58, 0.7)"
-                  : "rgba(0, 0, 0, 0.05)",
-            },
-          ]}
-        >
-          <FeatureItem text="Personalized workouts based on your mood" />
-          <FeatureItem text="Tailored to your available time" />
-          <FeatureItem text="Focus on your fitness goals" />
-          <FeatureItem text="AI-powered workout generation" />
+        {/* Features Section */}
+        <View style={styles.featuresSection}>
+          <ThemedText style={styles.sectionTitle}>
+            ✨ What Makes VibeFit Special
+          </ThemedText>
+
+          <FeatureCard
+            emoji="🧠"
+            title="AI-Powered Intelligence"
+            description="Workouts that understand your mood and energy levels"
+            colorScheme={colorScheme}
+          />
+          <FeatureCard
+            emoji="⚡"
+            title="Lightning Fast"
+            description="Generate perfect workouts in seconds, not hours"
+            colorScheme={colorScheme}
+          />
+          <FeatureCard
+            emoji="🎨"
+            title="Perfectly Tailored"
+            description="Every exercise fits your time, space, and equipment"
+            colorScheme={colorScheme}
+          />
+          <FeatureCard
+            emoji="📱"
+            title="Always With You"
+            description="Home, gym, or anywhere - your coach travels with you"
+            colorScheme={colorScheme}
+          />
         </View>
 
-        {/* Action Button */}
-        <View style={styles.buttonContainer}>
+        {/* Motivational Quote */}
+        <View style={styles.quoteSection}>
+          <LinearGradient
+            colors={
+              colorScheme === "dark"
+                ? ["rgba(255, 107, 156, 0.15)", "rgba(196, 78, 196, 0.15)"]
+                : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.7)"]
+            }
+            style={styles.quoteCard}
+          >
+            <ThemedText style={styles.quoteEmoji}>💎</ThemedText>
+            <ThemedText style={styles.quoteText}>
+              "Every workout is a step closer to the best version of yourself"
+            </ThemedText>
+            <ThemedText style={styles.quoteAuthor}>
+              - Your VibeFit Coach
+            </ThemedText>
+          </LinearGradient>
+        </View>
+
+        {/* Action Buttons */}
+        <View style={styles.actionSection}>
           {!isLoading && (
             <>
               {isAuthenticated ? (
-                <Button
-                  title="Build Today's Workout"
-                  onPress={handleCreateWorkout}
-                  style={styles.button}
-                />
+                <>
+                  <Button
+                    title="🚀 Build Today's Workout"
+                    onPress={handleCreateWorkout}
+                    style={styles.primaryButton}
+                  />
+                </>
               ) : (
-                <Button
-                  title="Get Started"
-                  onPress={handleLogin}
-                  style={styles.button}
-                />
+                <>
+                  <Button
+                    title="🎯 Start Your Journey"
+                    onPress={handleSignup}
+                    style={styles.primaryButton}
+                  />
+                  <Button
+                    title="👋 Already have an account? Sign in"
+                    onPress={handleLogin}
+                    variant="outline"
+                    style={styles.secondaryButton}
+                  />
+                </>
               )}
             </>
           )}
         </View>
-      </View>
+      </ScrollView>
     </ThemedView>
   );
 }
 
-function FeatureItem({ text }: { text: string }) {
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? "light"];
-
+function StatCard({
+  emoji,
+  title,
+  subtitle,
+  colorScheme,
+}: {
+  emoji: string;
+  title: string;
+  subtitle: string;
+  colorScheme: string | null | undefined;
+}) {
   return (
-    <View style={styles.featureItem}>
-      <View style={[styles.bullet, { backgroundColor: colors.primary }]} />
-      <ThemedText style={styles.featureText}>{text}</ThemedText>
-    </View>
+    <LinearGradient
+      colors={
+        colorScheme === "dark"
+          ? ["rgba(255, 255, 255, 0.1)", "rgba(255, 255, 255, 0.05)"]
+          : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.6)"]
+      }
+      style={styles.statCard}
+    >
+      <ThemedText style={styles.statEmoji}>{emoji}</ThemedText>
+      <ThemedText style={styles.statTitle}>{title}</ThemedText>
+      <ThemedText style={styles.statSubtitle}>{subtitle}</ThemedText>
+    </LinearGradient>
+  );
+}
+
+function FeatureCard({
+  emoji,
+  title,
+  description,
+  colorScheme,
+}: {
+  emoji: string;
+  title: string;
+  description: string;
+  colorScheme: string | null | undefined;
+}) {
+  return (
+    <LinearGradient
+      colors={
+        colorScheme === "dark"
+          ? ["rgba(255, 255, 255, 0.08)", "rgba(255, 255, 255, 0.02)"]
+          : ["rgba(255, 255, 255, 0.8)", "rgba(255, 255, 255, 0.4)"]
+      }
+      style={styles.featureCard}
+    >
+      <View style={styles.featureHeader}>
+        <ThemedText style={styles.featureEmoji}>{emoji}</ThemedText>
+        <ThemedText style={styles.featureTitle}>{title}</ThemedText>
+      </View>
+      <ThemedText style={styles.featureDescription}>{description}</ThemedText>
+    </LinearGradient>
   );
 }
 
@@ -152,75 +275,190 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
   },
-  content: {
-    flex: 1,
-    padding: 24,
-    justifyContent: "center",
-    alignItems: "center",
+  scrollContent: {
+    paddingTop: 80,
+    paddingHorizontal: 20,
+    paddingBottom: 120,
   },
-  logoCircleContainer: {
+  headerSection: {
     alignItems: "center",
-    marginBottom: 30, // Increased from 20
-    marginTop: -20, // Changed from -40 to reduce top spacing
+    marginBottom: 30,
+    marginTop: 20,
+  },
+  logoContainer: {
+    marginBottom: 20,
   },
   logoCircle: {
     width: width * 0.35,
     height: width * 0.35,
     borderRadius: (width * 0.35) / 2,
-    backgroundColor: "rgba(80, 80, 90, 0.8)",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.3)",
   },
-  titleContainer: {
+  welcomeContainer: {
     alignItems: "center",
-    marginBottom: 30,
-    paddingTop: 10, // Added padding to ensure text isn't cut off
+    paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 38, // Reduced from 42 to ensure it fits better
-    fontWeight: "bold",
-    letterSpacing: 1,
+  welcomeEmoji: {
+    fontSize: 32,
     marginBottom: 8,
+    marginTop: 16,
+    paddingVertical: 16,
+  },
+  welcomeText: {
+    fontSize: 28,
+    fontWeight: "bold",
     textAlign: "center",
-    includeFontPadding: true, // Ensure proper text rendering with padding
-    paddingTop: 5, // Add explicit padding to the top of the text
+    marginBottom: 12,
+    color: "white",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+    paddingVertical: 8,
   },
-  subtitle: {
-    fontSize: 18,
-    textAlign: "center",
-    opacity: 0.8,
-  },
-  featureContainer: {
-    width: "100%",
-    marginBottom: 40,
-    padding: 24,
-    borderRadius: 16,
-  },
-  featureItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  bullet: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginRight: 12,
-  },
-  featureText: {
+  tagline: {
     fontSize: 16,
+    textAlign: "center",
+    opacity: 0.9,
+    lineHeight: 24,
+    color: "white",
     fontWeight: "500",
   },
-  buttonContainer: {
-    width: "100%",
+  statsSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 30,
+    gap: 12,
+  },
+  statCard: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  statEmoji: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  statTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 4,
+  },
+  statSubtitle: {
+    fontSize: 12,
+    opacity: 0.8,
+    textAlign: "center",
+  },
+  featuresSection: {
+    marginBottom: 30,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
+    color: "white",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  featureCard: {
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  featureHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  featureEmoji: {
+    fontSize: 24,
+    marginRight: 12,
+  },
+  featureTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    flex: 1,
+  },
+  featureDescription: {
+    fontSize: 15,
+    opacity: 0.8,
+    lineHeight: 22,
+  },
+  quoteSection: {
+    marginBottom: 30,
+  },
+  quoteCard: {
+    padding: 24,
+    borderRadius: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  quoteEmoji: {
+    fontSize: 28,
+    marginBottom: 12,
+  },
+  quoteText: {
+    fontSize: 18,
+    fontStyle: "italic",
+    textAlign: "center",
+    marginBottom: 8,
+    lineHeight: 26,
+    fontWeight: "500",
+  },
+  quoteAuthor: {
+    fontSize: 14,
+    opacity: 0.7,
+    textAlign: "center",
+  },
+  actionSection: {
     gap: 16,
   },
-  button: {
-    width: "100%",
+  primaryButton: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  secondaryButton: {
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
+  },
+  quickActions: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  quickActionsText: {
+    fontSize: 14,
+    textAlign: "center",
+    opacity: 0.9,
+    color: "white",
   },
 });

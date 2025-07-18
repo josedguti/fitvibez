@@ -191,8 +191,8 @@ export default function WorkoutsScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#2D2D3A", "#3D3D4D"]
-              : ["#FFF5F7", "#FFF"]
+              ? ["#1a1a2e", "#16213e", "#0f3460"]
+              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
           }
           style={styles.background}
         />
@@ -207,8 +207,8 @@ export default function WorkoutsScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#2D2D3A", "#3D3D4D"]
-              : ["#FFF5F7", "#FFF"]
+              ? ["#1a1a2e", "#16213e", "#0f3460"]
+              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
           }
           style={styles.background}
         />
@@ -233,7 +233,9 @@ export default function WorkoutsScreen() {
     <ThemedView style={styles.container}>
       <LinearGradient
         colors={
-          colorScheme === "dark" ? ["#2D2D3A", "#3D3D4D"] : ["#FFF5F7", "#FFF"]
+          colorScheme === "dark"
+            ? ["#1a1a2e", "#16213e", "#0f3460"]
+            : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
         }
         style={styles.background}
       />
@@ -242,11 +244,12 @@ export default function WorkoutsScreen() {
         <ThemedText type="title" style={styles.headerTitle}>
           Your Workouts
         </ThemedText>
-        <Button
-          title="Create New"
-          onPress={handleCreateWorkout}
+        <TouchableOpacity
           style={styles.createButton}
-        />
+          onPress={handleCreateWorkout}
+        >
+          <Ionicons name="add" size={24} color="white" />
+        </TouchableOpacity>
       </View>
 
       {workouts.length === 0 ? (
@@ -421,11 +424,26 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: "bold",
+    color: "white",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+    flex: 1,
+    textAlign: "center",
+    marginTop: 8,
   },
   createButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    minWidth: 0,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   emptyContainer: {
     flex: 1,

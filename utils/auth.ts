@@ -342,10 +342,6 @@ export async function uploadProfilePicture(imageUri: string) {
 
     const userId = session.session.user.id;
 
-    // Convert image URI to blob
-    const response = await fetch(imageUri);
-    const blob = await response.blob();
-
     // Create file name with timestamp to avoid conflicts
     const timestamp = new Date().getTime();
     const fileName = `${userId}/profile-picture-${timestamp}.jpg`;
@@ -353,17 +349,50 @@ export async function uploadProfilePicture(imageUri: string) {
     // Delete existing profile picture if it exists
     await deleteExistingProfilePicture(userId);
 
-    // Upload new image
+    // Convert image URI to proper format for upload
+    console.log("Uploading image with URI:", imageUri);
+
+    let fileToUpload: any;
+
+    if (imageUri.startsWith("file://") || imageUri.startsWith("content://")) {
+      // For local files, use the file URI directly with proper metadata
+      console.log("Using file URI directly for local file");
+
+      // Create a file-like object that Supabase can handle
+      fileToUpload = {
+        uri: imageUri,
+        type: "image/jpeg",
+        name: `profile-picture-${timestamp}.jpg`,
+      };
+
+      console.log("Created file object for upload");
+    } else {
+      // For other URIs, try fetch/blob conversion
+      console.log("Using fetch/blob approach for remote URI");
+      const response = await fetch(imageUri);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.status}`);
+      }
+      fileToUpload = await response.blob();
+    }
+
+    console.log("File to upload type:", typeof fileToUpload);
+    console.log("File to upload size:", fileToUpload.size || "unknown");
+
+    // Upload the image file - Supabase should handle file objects properly
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from("profile-pictures")
-      .upload(fileName, blob, {
+      .upload(fileName, fileToUpload as any, {
         contentType: "image/jpeg",
         upsert: true,
       });
 
     if (uploadError) {
+      console.error("Upload error details:", uploadError);
       throw uploadError;
     }
+
+    console.log("Upload successful:", uploadData);
 
     // Get public URL
     const { data: urlData } = supabase.storage
@@ -371,6 +400,7 @@ export async function uploadProfilePicture(imageUri: string) {
       .getPublicUrl(fileName);
 
     const publicUrl = urlData.publicUrl;
+    console.log("Generated public URL:", publicUrl);
 
     // Update profile with new picture URL
     const { error: updateError } = await supabase
@@ -382,9 +412,11 @@ export async function uploadProfilePicture(imageUri: string) {
       .eq("id", userId);
 
     if (updateError) {
+      console.error("Profile update error:", updateError);
       throw updateError;
     }
 
+    console.log("Profile updated successfully with new picture URL");
     return { profilePictureUrl: publicUrl, error: null };
   } catch (error) {
     console.error("Error uploading profile picture:", error);

@@ -148,7 +148,9 @@ export default function GenerateWorkoutScreen() {
     <ThemedView style={styles.container}>
       <LinearGradient
         colors={
-          colorScheme === "dark" ? ["#2D2D3A", "#3D3D4D"] : ["#FFF5F7", "#FFF"]
+          colorScheme === "dark"
+            ? ["#1a1a2e", "#16213e", "#0f3460"]
+            : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
         }
         style={styles.background}
       />
@@ -403,7 +405,7 @@ const styles = StyleSheet.create({
   },
   generatingContainer: {
     flex: 1,
-    paddingTop: 60,
+    paddingTop: 120,
   },
   headerLoading: {
     alignItems: "center",

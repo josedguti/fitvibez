@@ -46,20 +46,68 @@ export async function searchUsers(
       return { users: [], error: "Not authenticated" };
     }
 
-    const { data, error } = await supabase
+    // Get all search results first
+    const { data: searchResults, error: searchError } = await supabase
       .from("profiles")
       .select(
-        "id, username, sex, date_of_birth, weight, weight_unit, height, height_unit, fitness_goals"
+        "id, username, sex, date_of_birth, weight, weight_unit, height, height_unit, fitness_goals, profile_picture_url"
       )
       .ilike("username", `%${query}%`)
       .neq("id", user.id) // Exclude current user
       .limit(20);
 
-    if (error) {
-      return { users: [], error: error.message };
+    if (searchError) {
+      return { users: [], error: searchError.message };
     }
 
-    return { users: data || [], error: null };
+    if (!searchResults || searchResults.length === 0) {
+      return { users: [], error: null };
+    }
+
+    // Get existing friendships (both directions)
+    const { data: friendships, error: friendshipError } = await supabase
+      .from("friendships")
+      .select("friend_id, user_id")
+      .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
+
+    // Get pending friend requests (both directions)
+    const { data: pendingRequests, error: requestError } = await supabase
+      .from("friend_requests")
+      .select("sender_id, receiver_id")
+      .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
+      .eq("status", "pending");
+
+    // Create sets of user IDs to exclude
+    const excludedUserIds = new Set<string>();
+
+    // Add friends to excluded list
+    if (friendships) {
+      friendships.forEach((friendship) => {
+        if (friendship.user_id === user.id) {
+          excludedUserIds.add(friendship.friend_id);
+        } else {
+          excludedUserIds.add(friendship.user_id);
+        }
+      });
+    }
+
+    // Add users with pending requests to excluded list
+    if (pendingRequests) {
+      pendingRequests.forEach((request) => {
+        if (request.sender_id === user.id) {
+          excludedUserIds.add(request.receiver_id);
+        } else {
+          excludedUserIds.add(request.sender_id);
+        }
+      });
+    }
+
+    // Filter out excluded users from search results
+    const filteredUsers = searchResults.filter(
+      (searchUser) => !excludedUserIds.has(searchUser.id)
+    );
+
+    return { users: filteredUsers, error: null };
   } catch (error) {
     return { users: [], error: "An error occurred while searching users" };
   }
@@ -141,7 +189,7 @@ export async function getPendingFriendRequests(): Promise<{
       .select(
         `
         *,
-        sender_profile:profiles!sender_id(id, username, sex, date_of_birth, weight, weight_unit, height, height_unit, fitness_goals)
+        sender_profile:profiles!sender_id(id, username, sex, date_of_birth, weight, weight_unit, height, height_unit, fitness_goals, profile_picture_url)
       `
       )
       .eq("receiver_id", user.id)
@@ -224,7 +272,7 @@ export async function getFriends(): Promise<{
       .select(
         `
         *,
-        friend_profile:profiles!friend_id(id, username, sex, date_of_birth, weight, weight_unit, height, height_unit, fitness_goals)
+        friend_profile:profiles!friend_id(id, username, sex, date_of_birth, weight, weight_unit, height, height_unit, fitness_goals, profile_picture_url)
       `
       )
       .eq("user_id", user.id)

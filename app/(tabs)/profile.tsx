@@ -219,8 +219,8 @@ export default function ProfileScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#2D2D3A", "#3D3D4D"]
-              : ["#FFF5F7", "#FFF"]
+              ? ["#1a1a2e", "#16213e", "#0f3460"]
+              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
           }
           style={styles.background}
         />
@@ -235,8 +235,8 @@ export default function ProfileScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#2D2D3A", "#3D3D4D"]
-              : ["#FFF5F7", "#FFF"]
+              ? ["#1a1a2e", "#16213e", "#0f3460"]
+              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
           }
           style={styles.background}
         />
@@ -263,8 +263,8 @@ export default function ProfileScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#2D2D3A", "#3D3D4D"]
-              : ["#FFF5F7", "#FFF"]
+              ? ["#1a1a2e", "#16213e", "#0f3460"]
+              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
           }
           style={styles.background}
         />
@@ -277,7 +277,9 @@ export default function ProfileScreen() {
     <ThemedView style={styles.container}>
       <LinearGradient
         colors={
-          colorScheme === "dark" ? ["#2D2D3A", "#3D3D4D"] : ["#FFF5F7", "#FFF"]
+          colorScheme === "dark"
+            ? ["#1a1a2e", "#16213e", "#0f3460"]
+            : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
         }
         style={styles.background}
       />
@@ -461,6 +463,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 8,
     textAlign: "center",
+    color: "white",
+    textShadowColor: "rgba(0, 0, 0, 0.3)",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   subtitle: {
     fontSize: 18,

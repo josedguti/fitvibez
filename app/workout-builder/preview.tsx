@@ -124,8 +124,8 @@ export default function WorkoutPreviewScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#2D2D3A", "#3D3D4D"]
-              : ["#FFF5F7", "#FFF"]
+              ? ["#1a1a2e", "#16213e", "#0f3460"]
+              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
           }
           style={styles.background}
         />
@@ -138,7 +138,9 @@ export default function WorkoutPreviewScreen() {
     <ThemedView style={styles.container}>
       <LinearGradient
         colors={
-          colorScheme === "dark" ? ["#2D2D3A", "#3D3D4D"] : ["#FFF5F7", "#FFF"]
+          colorScheme === "dark"
+            ? ["#1a1a2e", "#16213e", "#0f3460"]
+            : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
         }
         style={styles.background}
       />
@@ -434,12 +436,12 @@ const styles = StyleSheet.create({
   },
   regeneratingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    paddingTop: 120,
   },
   headerLoading: {
-    marginBottom: 20,
+    alignItems: "center",
+    paddingBottom: 20,
+    paddingHorizontal: 20,
   },
   titleLoading: {
     fontSize: 24,
