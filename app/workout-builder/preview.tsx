@@ -124,8 +124,8 @@ export default function WorkoutPreviewScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#1a1a2e", "#16213e", "#0f3460"]
-              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
+              ? ["#1C1C1E", "#2C2C2E", "#3C3C3E"]
+              : ["#F8F8F8", "#F2F2F2", "#EEEEEE"]
           }
           style={styles.background}
         />
@@ -139,15 +139,15 @@ export default function WorkoutPreviewScreen() {
       <LinearGradient
         colors={
           colorScheme === "dark"
-            ? ["#1a1a2e", "#16213e", "#0f3460"]
-            : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
+            ? ["#1C1C1E", "#2C2C2E", "#3C3C3E"]
+            : ["#F8F8F8", "#F2F2F2", "#EEEEEE"]
         }
         style={styles.background}
       />
 
       {isRegenerating ? (
         // Show motivational carousel during regeneration
-        <View style={styles.regeneratingContainer}>
+        <View style={styles.generatingContainer}>
           <View style={styles.headerLoading}>
             <ThemedText type="title" style={styles.titleLoading}>
               Creating Your New Workout ✨
@@ -179,102 +179,241 @@ export default function WorkoutPreviewScreen() {
             ref={scrollViewRef}
             contentContainerStyle={styles.scrollContent}
           >
-            {/* Workout Title */}
-            <View style={styles.workoutTitleContainer}>
-              <ThemedText style={styles.workoutTitle}>
-                {workout.title}
-              </ThemedText>
-              <View style={styles.difficultyBadge}>
-                <ThemedText style={styles.difficultyText}>
-                  {workout.difficulty}
-                </ThemedText>
-              </View>
-            </View>
+            {/* Workout Title Header */}
+            <View style={styles.heroSection}>
+              <LinearGradient
+                colors={
+                  colorScheme === "dark"
+                    ? ["rgba(232, 165, 165, 0.2)", "rgba(212, 197, 244, 0.1)"]
+                    : ["rgba(232, 165, 165, 0.3)", "rgba(212, 197, 244, 0.2)"]
+                }
+                style={styles.heroGradient}
+              >
+                <View style={styles.workoutTitleContainer}>
+                  <ThemedText style={styles.workoutTitle}>
+                    {workout.title}
+                  </ThemedText>
+                  <View
+                    style={[
+                      styles.difficultyBadge,
+                      { backgroundColor: colors.primary + "20" },
+                    ]}
+                  >
+                    <Ionicons
+                      name="trending-up"
+                      size={16}
+                      color={colors.primary}
+                    />
+                    <ThemedText
+                      style={[styles.difficultyText, { color: colors.primary }]}
+                    >
+                      {workout.difficulty}
+                    </ThemedText>
+                  </View>
+                </View>
 
-            {/* Workout Description */}
-            <View style={styles.sectionContainer}>
-              <ThemedText style={styles.description}>
-                {workout.description}
-              </ThemedText>
-              <ThemedText style={styles.totalTime}>
-                Total Time: {workout.totalTime}
-              </ThemedText>
+                <ThemedText style={styles.workoutDescription}>
+                  {workout.description}
+                </ThemedText>
+
+                <View style={styles.quickStats}>
+                  <View style={styles.statItem}>
+                    <Ionicons name="time" size={20} color={colors.primary} />
+                    <ThemedText style={styles.statText}>
+                      {workout.totalTime}
+                    </ThemedText>
+                  </View>
+                  <View style={styles.statItem}>
+                    <Ionicons
+                      name="fitness"
+                      size={20}
+                      color={colors.secondary}
+                    />
+                    <ThemedText style={styles.statText}>
+                      {workout.exercises.length} exercises
+                    </ThemedText>
+                  </View>
+                </View>
+              </LinearGradient>
             </View>
 
             {/* Warmup Section */}
             {workout.warmup && (
-              <View style={styles.sectionContainer}>
-                <ThemedText style={styles.sectionTitle}>Warm Up</ThemedText>
-                <ThemedText style={styles.sectionContent}>
-                  {workout.warmup}
-                </ThemedText>
+              <View style={styles.sectionCard}>
+                <LinearGradient
+                  colors={
+                    colorScheme === "dark"
+                      ? [
+                          "rgba(245, 230, 211, 0.1)",
+                          "rgba(245, 230, 211, 0.05)",
+                        ]
+                      : ["rgba(245, 230, 211, 0.4)", "rgba(245, 230, 211, 0.2)"]
+                  }
+                  style={styles.cardGradient}
+                >
+                  <View style={styles.sectionHeader}>
+                    <Ionicons name="flame" size={24} color={colors.accent} />
+                    <ThemedText style={styles.sectionTitle}>Warm Up</ThemedText>
+                  </View>
+                  <ThemedText style={styles.sectionContent}>
+                    {workout.warmup}
+                  </ThemedText>
+                </LinearGradient>
               </View>
             )}
 
             {/* Exercises Section */}
-            <View style={styles.sectionContainer}>
-              <ThemedText style={styles.sectionTitle}>Exercises</ThemedText>
-              {workout.exercises.map((exercise, index) => (
-                <View key={index} style={styles.exerciseContainer}>
-                  <ThemedText style={styles.exerciseName}>
-                    {index + 1}. {exercise.name}
-                  </ThemedText>
-                  <View style={styles.exerciseDetails}>
-                    {exercise.sets && (
-                      <View style={styles.detailItem}>
-                        <ThemedText style={styles.detailLabel}>Sets</ThemedText>
-                        <ThemedText style={styles.detailValue}>
-                          {exercise.sets}
-                        </ThemedText>
-                      </View>
-                    )}
-                    {exercise.reps && (
-                      <View style={styles.detailItem}>
-                        <ThemedText style={styles.detailLabel}>Reps</ThemedText>
-                        <ThemedText style={styles.detailValue}>
-                          {exercise.reps}
-                        </ThemedText>
-                      </View>
-                    )}
-                    {exercise.duration && (
-                      <View style={styles.detailItem}>
-                        <ThemedText style={styles.detailLabel}>
-                          Duration
-                        </ThemedText>
-                        <ThemedText style={styles.detailValue}>
-                          {exercise.duration}
-                        </ThemedText>
-                      </View>
-                    )}
-                    {exercise.restBetweenSets && (
-                      <View style={styles.detailItem}>
-                        <ThemedText style={styles.detailLabel}>Rest</ThemedText>
-                        <ThemedText style={styles.detailValue}>
-                          {exercise.restBetweenSets}
-                        </ThemedText>
-                      </View>
-                    )}
-                  </View>
-                  <ThemedText style={styles.instructions}>
-                    {exercise.instructions}
-                  </ThemedText>
-
-                  {/* Exercise Visual Component */}
-                  <ExerciseVisual
-                    videoUrl={exercise.videoUrl}
-                    exerciseName={exercise.name}
-                  />
+            <View style={styles.sectionCard}>
+              <LinearGradient
+                colors={
+                  colorScheme === "dark"
+                    ? ["rgba(255, 255, 255, 0.08)", "rgba(255, 255, 255, 0.02)"]
+                    : ["rgba(255, 255, 255, 0.9)", "rgba(255, 255, 255, 0.5)"]
+                }
+                style={styles.cardGradient}
+              >
+                <View style={styles.sectionHeader}>
+                  <Ionicons name="barbell" size={24} color={colors.primary} />
+                  <ThemedText style={styles.sectionTitle}>Exercises</ThemedText>
                 </View>
-              ))}
+
+                {workout.exercises.map((exercise, index) => (
+                  <View key={index} style={styles.exerciseCard}>
+                    <LinearGradient
+                      colors={
+                        colorScheme === "dark"
+                          ? [
+                              "rgba(255, 255, 255, 0.06)",
+                              "rgba(255, 255, 255, 0.02)",
+                            ]
+                          : [
+                              "rgba(255, 255, 255, 0.7)",
+                              "rgba(255, 255, 255, 0.3)",
+                            ]
+                      }
+                      style={styles.exerciseGradient}
+                    >
+                      <View style={styles.exerciseHeader}>
+                        <View style={styles.exerciseNumber}>
+                          <ThemedText style={styles.exerciseNumberText}>
+                            {index + 1}
+                          </ThemedText>
+                        </View>
+                        <ThemedText style={styles.exerciseName}>
+                          {exercise.name}
+                        </ThemedText>
+                      </View>
+
+                      <View style={styles.exerciseMetrics}>
+                        {exercise.sets && (
+                          <View style={styles.metricChip}>
+                            <Ionicons
+                              name="repeat"
+                              size={14}
+                              color={colors.primary}
+                            />
+                            <ThemedText style={styles.metricLabel}>
+                              Sets
+                            </ThemedText>
+                            <ThemedText style={styles.metricValue}>
+                              {exercise.sets}
+                            </ThemedText>
+                          </View>
+                        )}
+                        {exercise.reps && (
+                          <View style={styles.metricChip}>
+                            <Ionicons
+                              name="fitness"
+                              size={14}
+                              color={colors.secondary}
+                            />
+                            <ThemedText style={styles.metricLabel}>
+                              Reps
+                            </ThemedText>
+                            <ThemedText style={styles.metricValue}>
+                              {exercise.reps}
+                            </ThemedText>
+                          </View>
+                        )}
+                        {exercise.duration && (
+                          <View style={styles.metricChip}>
+                            <Ionicons
+                              name="timer"
+                              size={14}
+                              color={colors.accent}
+                            />
+                            <ThemedText style={styles.metricLabel}>
+                              Duration
+                            </ThemedText>
+                            <ThemedText style={styles.metricValue}>
+                              {exercise.duration}
+                            </ThemedText>
+                          </View>
+                        )}
+                        {exercise.restBetweenSets && (
+                          <View style={styles.metricChip}>
+                            <Ionicons name="pause" size={14} color="#888" />
+                            <ThemedText style={styles.metricLabel}>
+                              Rest
+                            </ThemedText>
+                            <ThemedText style={styles.metricValue}>
+                              {exercise.restBetweenSets}
+                            </ThemedText>
+                          </View>
+                        )}
+                      </View>
+
+                      <View style={styles.instructionsSection}>
+                        <View style={styles.instructionsHeader}>
+                          <Ionicons
+                            name="information-circle"
+                            size={16}
+                            color={colors.text}
+                          />
+                          <ThemedText style={styles.instructionsLabel}>
+                            How to perform:
+                          </ThemedText>
+                        </View>
+                        <ThemedText style={styles.instructions}>
+                          {exercise.instructions}
+                        </ThemedText>
+                      </View>
+
+                      {/* Exercise Visual Component */}
+                      <ExerciseVisual
+                        videoUrl={exercise.videoUrl}
+                        exerciseName={exercise.name}
+                      />
+                    </LinearGradient>
+                  </View>
+                ))}
+              </LinearGradient>
             </View>
 
             {/* Cooldown Section */}
             {workout.cooldown && (
-              <View style={styles.sectionContainer}>
-                <ThemedText style={styles.sectionTitle}>Cool Down</ThemedText>
-                <ThemedText style={styles.sectionContent}>
-                  {workout.cooldown}
-                </ThemedText>
+              <View style={styles.sectionCard}>
+                <LinearGradient
+                  colors={
+                    colorScheme === "dark"
+                      ? [
+                          "rgba(212, 197, 244, 0.1)",
+                          "rgba(212, 197, 244, 0.05)",
+                        ]
+                      : ["rgba(212, 197, 244, 0.4)", "rgba(212, 197, 244, 0.2)"]
+                  }
+                  style={styles.cardGradient}
+                >
+                  <View style={styles.sectionHeader}>
+                    <Ionicons name="leaf" size={24} color={colors.secondary} />
+                    <ThemedText style={styles.sectionTitle}>
+                      Cool Down
+                    </ThemedText>
+                  </View>
+                  <ThemedText style={styles.sectionContent}>
+                    {workout.cooldown}
+                  </ThemedText>
+                </LinearGradient>
               </View>
             )}
 
@@ -323,6 +462,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: 20,
+    paddingTop: 40,
     paddingBottom: 40,
   },
   header: {
@@ -345,96 +485,172 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
   },
+  heroSection: {
+    borderRadius: 20,
+    overflow: "hidden",
+    marginBottom: 24,
+    marginTop: 24,
+  },
+  heroGradient: {
+    padding: 32,
+    paddingTop: 44,
+  },
   workoutTitleContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 12,
   },
   workoutTitle: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: "bold",
     flex: 1,
+    marginRight: 12,
   },
   difficultyBadge: {
-    backgroundColor: "#FF6B6B",
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    gap: 4,
   },
   difficultyText: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "bold",
-    textTransform: "uppercase",
+    fontSize: 14,
+    fontWeight: "600",
   },
-  sectionContainer: {
-    marginBottom: 24,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 16,
-    padding: 16,
-  },
-  description: {
+  workoutDescription: {
     fontSize: 16,
-    marginBottom: 12,
     lineHeight: 22,
+    marginBottom: 16,
+    opacity: 0.8,
   },
-  totalTime: {
+  quickStats: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 12,
+  },
+  statItem: {
+    alignItems: "center",
+    gap: 4,
+  },
+  statText: {
     fontSize: 14,
     fontWeight: "bold",
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
+  sectionCard: {
+    borderRadius: 16,
+    overflow: "hidden",
+    marginBottom: 24,
+  },
+  cardGradient: {
+    padding: 20,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 12,
+    gap: 8,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
   sectionContent: {
     fontSize: 16,
     lineHeight: 22,
+    opacity: 0.8,
   },
-  exerciseContainer: {
-    marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 255, 255, 0.1)",
+  exerciseCard: {
+    borderRadius: 12,
+    overflow: "hidden",
+    marginBottom: 12,
+  },
+  exerciseGradient: {
+    padding: 16,
+  },
+  exerciseHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  exerciseNumber: {
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 16,
+    width: 32,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  exerciseNumberText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "white",
   },
   exerciseName: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 8,
+    flex: 1,
   },
-  exerciseDetails: {
+  exerciseMetrics: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginBottom: 12,
+    gap: 8,
+    marginBottom: 16,
   },
-  detailItem: {
-    marginRight: 16,
-    marginBottom: 8,
+  metricChip: {
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    borderRadius: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
-  detailLabel: {
+  metricLabel: {
     fontSize: 12,
     opacity: 0.7,
   },
-  detailValue: {
+  metricValue: {
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  instructionsSection: {
+    marginBottom: 12,
+  },
+  instructionsHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    gap: 4,
+  },
+  instructionsLabel: {
     fontSize: 14,
     fontWeight: "500",
+    opacity: 0.7,
   },
   instructions: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 15,
+    lineHeight: 22,
+    opacity: 0.8,
   },
   actionButtonsContainer: {
-    marginTop: 16,
-    gap: 12,
+    gap: 16,
+    marginTop: 20,
   },
   saveButton: {
-    width: "100%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
   },
   regenerateButton: {
-    width: "100%",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    borderColor: "rgba(255, 255, 255, 0.3)",
   },
-  regeneratingContainer: {
+  generatingContainer: {
     flex: 1,
     paddingTop: 120,
   },
@@ -446,5 +662,6 @@ const styles = StyleSheet.create({
   titleLoading: {
     fontSize: 24,
     fontWeight: "bold",
+    textAlign: "center",
   },
 });

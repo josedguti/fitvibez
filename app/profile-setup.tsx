@@ -282,8 +282,8 @@ export default function ProfileSetupScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#2D2D3A", "#3D3D4D"]
-              : ["#FFF5F7", "#FFF"]
+              ? ["#1C1C1E", "#2C2C2E"]
+              : ["#F8F8F8", "#FAFAFA"]
           }
           style={styles.background}
         />
@@ -296,7 +296,9 @@ export default function ProfileSetupScreen() {
     <ThemedView style={styles.container}>
       <LinearGradient
         colors={
-          colorScheme === "dark" ? ["#2D2D3A", "#3D3D4D"] : ["#FFF5F7", "#FFF"]
+          colorScheme === "dark"
+            ? ["#1C1C1E", "#2C2C2E"]
+            : ["#F8F8F8", "#FAFAFA"]
         }
         style={styles.background}
       />

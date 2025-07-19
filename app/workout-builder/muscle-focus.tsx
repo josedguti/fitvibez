@@ -32,13 +32,25 @@ export default function MuscleFocusScreen() {
   const timeAvailable = params.timeAvailable as string;
   const mood = params.mood as string;
 
-  const [selectedMuscle, setSelectedMuscle] = useState<string>("");
+  const [selectedMuscles, setSelectedMuscles] = useState<string[]>([]);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
 
+  const handleMuscleSelect = (muscleValue: string) => {
+    setSelectedMuscles((prev) => {
+      if (prev.includes(muscleValue)) {
+        // Deselect if already selected
+        return prev.filter((muscle) => muscle !== muscleValue);
+      } else {
+        // Select if not already selected
+        return [...prev, muscleValue];
+      }
+    });
+  };
+
   const handleNext = () => {
-    if (!selectedMuscle) {
-      alert("Please select muscle focus");
+    if (selectedMuscles.length === 0) {
+      alert("Please select at least one muscle group");
       return;
     }
 
@@ -49,7 +61,7 @@ export default function MuscleFocusScreen() {
         workoutType,
         timeAvailable,
         mood,
-        muscleFocus: selectedMuscle,
+        muscleFocus: selectedMuscles.join(","), // Join array as comma-separated string
       },
     });
   };
@@ -58,7 +70,9 @@ export default function MuscleFocusScreen() {
     <ThemedView style={styles.container}>
       <LinearGradient
         colors={
-          colorScheme === "dark" ? ["#2D2D3A", "#3D3D4D"] : ["#FFF5F7", "#FFF"]
+          colorScheme === "dark"
+            ? ["#1C1C1E", "#2C2C2E"]
+            : ["#F8F8F8", "#FAFAFA"]
         }
         style={styles.background}
       />
@@ -82,7 +96,7 @@ export default function MuscleFocusScreen() {
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <ThemedText style={styles.questionText}>
-          Which muscle groups would you like to focus on?
+          Which muscle groups would you like to focus on? (Select one or more)
         </ThemedText>
 
         <View style={styles.optionsGrid}>
@@ -94,27 +108,25 @@ export default function MuscleFocusScreen() {
                 {
                   backgroundColor:
                     colorScheme === "dark" ? "#3D3D4D" : "#FFFFFF",
-                  borderColor:
-                    selectedMuscle === option.value
-                      ? colors.primary
-                      : colorScheme === "dark"
-                      ? "#4D4D5D"
-                      : "#E5E5E5",
-                  borderWidth: selectedMuscle === option.value ? 2 : 1,
+                  borderColor: selectedMuscles.includes(option.value)
+                    ? colors.primary
+                    : colorScheme === "dark"
+                    ? "#4D4D5D"
+                    : "#E5E5E5",
+                  borderWidth: selectedMuscles.includes(option.value) ? 2 : 1,
                 },
               ]}
-              onPress={() => setSelectedMuscle(option.value)}
+              onPress={() => handleMuscleSelect(option.value)}
             >
               <View
                 style={[
                   styles.iconContainer,
                   {
-                    backgroundColor:
-                      selectedMuscle === option.value
-                        ? colors.primary
-                        : colorScheme === "dark"
-                        ? "#4D4D5D"
-                        : "#F0F0F0",
+                    backgroundColor: selectedMuscles.includes(option.value)
+                      ? colors.primary
+                      : colorScheme === "dark"
+                      ? "#4D4D5D"
+                      : "#F0F0F0",
                   },
                 ]}
               >
@@ -122,12 +134,14 @@ export default function MuscleFocusScreen() {
                   name={option.icon}
                   size={24}
                   color={
-                    selectedMuscle === option.value ? "#FFFFFF" : colors.primary
+                    selectedMuscles.includes(option.value)
+                      ? "#FFFFFF"
+                      : colors.primary
                   }
                 />
               </View>
               <ThemedText style={styles.optionLabel}>{option.label}</ThemedText>
-              {selectedMuscle === option.value && (
+              {selectedMuscles.includes(option.value) && (
                 <Ionicons
                   name="checkmark-circle"
                   size={20}

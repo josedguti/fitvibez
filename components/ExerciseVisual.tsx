@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Alert, Dimensions, StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
 
 import { Colors } from "@/constants/Colors";
@@ -17,6 +17,7 @@ export function ExerciseVisual({
   exerciseName,
 }: ExerciseVisualProps) {
   const [videoError, setVideoError] = useState(false);
+  const [showFallback, setShowFallback] = useState(!videoUrl);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
   const { width } = Dimensions.get("window");
@@ -39,22 +40,38 @@ export function ExerciseVisual({
 
   const handleVideoError = () => {
     setVideoError(true);
-    Alert.alert(
-      "Video Error",
-      "Unable to load the exercise video. Please check your internet connection."
-    );
+    setShowFallback(true);
   };
 
-  // If no video is available or there's an error, return null
-  if (!videoUrl || videoError) {
-    return null;
-  }
+  const renderFallbackContent = () => (
+    <View
+      style={[
+        styles.fallbackContainer,
+        {
+          backgroundColor:
+            colorScheme === "dark" ? "#3D3D4D" : "rgba(255, 255, 255, 0.9)",
+        },
+      ]}
+    >
+      <View style={styles.fallbackIconContainer}>
+        <Ionicons
+          name="videocam-outline"
+          size={48}
+          color={colors.text}
+          style={styles.fallbackIcon}
+        />
+      </View>
 
-  const embedUrl = getEmbedUrl(videoUrl);
+      <ThemedText style={styles.fallbackTitle}>
+        Video Demo Unavailable
+      </ThemedText>
+      <ThemedText style={styles.fallbackSubtitle}>
+        Follow the written instructions above for proper form
+      </ThemedText>
+    </View>
+  );
 
-  if (!embedUrl) {
-    return null;
-  }
+  const embedUrl = videoUrl ? getEmbedUrl(videoUrl) : null;
 
   return (
     <View style={styles.container}>
@@ -83,17 +100,22 @@ export function ExerciseVisual({
           },
         ]}
       >
-        <WebView
-          source={{ uri: embedUrl }}
-          style={[styles.video, { width: width - 80 }]}
-          onError={handleVideoError}
-          javaScriptEnabled={true}
-          domStorageEnabled={true}
-          startInLoadingState={true}
-          scalesPageToFit={true}
-          allowsInlineMediaPlayback={true}
-          mediaPlaybackRequiresUserAction={false}
-        />
+        {showFallback || videoError || !embedUrl ? (
+          renderFallbackContent()
+        ) : (
+          <WebView
+            source={{ uri: embedUrl }}
+            style={[styles.video, { width: width - 80 }]}
+            onError={handleVideoError}
+            onHttpError={handleVideoError}
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            startInLoadingState={true}
+            scalesPageToFit={true}
+            allowsInlineMediaPlayback={true}
+            mediaPlaybackRequiresUserAction={false}
+          />
+        )}
       </View>
     </View>
   );
@@ -131,5 +153,32 @@ const styles = StyleSheet.create({
   video: {
     height: 200,
     borderRadius: 8,
+  },
+  fallbackContainer: {
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    borderRadius: 12,
+  },
+  fallbackIconContainer: {
+    marginBottom: 15,
+  },
+  fallbackIcon: {
+    opacity: 0.6,
+  },
+  fallbackTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  fallbackSubtitle: {
+    fontSize: 14,
+    textAlign: "center",
+    opacity: 0.7,
+    marginBottom: 16,
+    lineHeight: 20,
+    paddingHorizontal: 20,
   },
 });

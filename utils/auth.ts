@@ -204,6 +204,31 @@ export async function saveWorkout(
 }
 
 /**
+ * Update workout rating
+ */
+export async function updateWorkoutRating(workoutId: string, rating: number) {
+  try {
+    const { data: authData } = await supabase.auth.getUser();
+
+    if (!authData.user) {
+      return { error: { message: "User not authenticated" } };
+    }
+
+    const { data, error } = await supabase
+      .from("workout_history")
+      .update({ rating })
+      .eq("id", workoutId)
+      .eq("user_id", authData.user.id)
+      .select();
+
+    return { data, error };
+  } catch (error) {
+    console.error("Update workout rating error:", error);
+    return { error: { message: "An unexpected error occurred" } };
+  }
+}
+
+/**
  * Get the user's workout history
  */
 export async function getWorkoutHistory() {

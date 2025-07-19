@@ -181,8 +181,7 @@ function buildWorkoutPrompt(params: WorkoutParams, userProfile: any): string {
       "reps": "number or range of repetitions" (if applicable),
       "duration": "time duration" (if applicable for timed exercises),
       "restBetweenSets": "rest time between sets",
-      "instructions": "detailed instructions on how to perform the exercise correctly",
-      "videoUrl": "a relevant YouTube video URL demonstrating proper form for this exercise (must be a valid YouTube URL)"
+      "instructions": "detailed instructions on how to perform the exercise correctly"
     }
   ],
   "warmup": "brief warmup routine description",
@@ -191,7 +190,11 @@ function buildWorkoutPrompt(params: WorkoutParams, userProfile: any): string {
   "difficulty": "beginner/intermediate/advanced"
 }
 
-IMPORTANT: For each exercise, please include both a videoUrl (YouTube video) and imageUrl that demonstrate proper form and technique. Use well-known fitness YouTube channels and reputable fitness image sources. The visual elements are crucial for user safety and proper exercise execution.`;
+IMPORTANT: 
+- Do NOT include videoUrl fields in the response - our app will automatically provide appropriate exercise demonstration videos
+- Focus on clear, detailed instructions for each exercise to ensure proper form and safety
+- Make sure exercise names are standard and commonly recognized (e.g., "Push-up", "Squat", "Plank")
+- The instructions should be comprehensive enough that users can perform exercises safely without video if needed`;
 
   return prompt;
 }

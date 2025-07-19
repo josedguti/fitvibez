@@ -106,15 +106,19 @@ export default function GenerateWorkoutScreen() {
       case "mood":
         return value.charAt(0).toUpperCase() + value.slice(1);
       case "muscleFocus":
-        return value === "full-body"
-          ? "Full Body"
-          : value === "upper-body"
-          ? "Upper Body"
-          : value === "lower-body"
-          ? "Lower Body"
-          : value === "core"
-          ? "Core"
-          : value.charAt(0).toUpperCase() + value.slice(1);
+        // Handle multiple muscle groups
+        const muscles = value.split(",").map((muscle) => {
+          return muscle === "full-body"
+            ? "Full Body"
+            : muscle === "upper-body"
+            ? "Upper Body"
+            : muscle === "lower-body"
+            ? "Lower Body"
+            : muscle === "core"
+            ? "Core"
+            : muscle.charAt(0).toUpperCase() + muscle.slice(1);
+        });
+        return muscles.join(", ");
       case "equipment":
         return value === "none"
           ? "No Equipment"
@@ -149,8 +153,8 @@ export default function GenerateWorkoutScreen() {
       <LinearGradient
         colors={
           colorScheme === "dark"
-            ? ["#1a1a2e", "#16213e", "#0f3460"]
-            : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
+            ? ["#1C1C1E", "#2C2C2E", "#3C3C3E"]
+            : ["#F8F8F8", "#F2F2F2", "#EEEEEE"]
         }
         style={styles.background}
       />

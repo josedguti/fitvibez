@@ -302,8 +302,8 @@ export default function FriendsScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#1a1a2e", "#16213e", "#0f3460"]
-              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
+              ? ["#1C1C1E", "#2C2C2E", "#3C3C3E"]
+              : ["#F8F8F8", "#F2F2F2", "#EEEEEE"]
           }
           style={styles.background}
         />
@@ -318,8 +318,8 @@ export default function FriendsScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#1a1a2e", "#16213e", "#0f3460"]
-              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
+              ? ["#1C1C1E", "#2C2C2E", "#3C3C3E"]
+              : ["#F8F8F8", "#F2F2F2", "#EEEEEE"]
           }
           style={styles.background}
         />
@@ -345,8 +345,8 @@ export default function FriendsScreen() {
       <LinearGradient
         colors={
           colorScheme === "dark"
-            ? ["#1a1a2e", "#16213e", "#0f3460"]
-            : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
+            ? ["#1C1C1E", "#2C2C2E", "#3C3C3E"]
+            : ["#F8F8F8", "#F2F2F2", "#EEEEEE"]
         }
         style={styles.background}
       />
@@ -525,10 +525,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 16,
     textAlign: "center",
-    color: "white",
-    textShadowColor: "rgba(0, 0, 0, 0.3)",
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
   },
   subtitle: {
     fontSize: 18,

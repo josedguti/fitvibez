@@ -13,12 +13,14 @@ import {
 import { Button } from "@/components/Button";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { WorkoutRating } from "@/components/WorkoutRating";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import {
   deleteWorkout,
   getWorkoutHistory,
   requireAuth,
+  updateWorkoutRating,
   WorkoutHistory,
 } from "@/utils/auth";
 
@@ -26,6 +28,9 @@ export default function WorkoutsScreen() {
   const [workouts, setWorkouts] = useState<WorkoutHistory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [ratingUpdates, setRatingUpdates] = useState<{
+    [key: string]: boolean;
+  }>({});
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
 
@@ -72,8 +77,34 @@ export default function WorkoutsScreen() {
       params: {
         workoutId: workout.id,
         workoutData: JSON.stringify(workout.workout_data),
+        rating: workout.rating?.toString() || "0",
       },
     });
+  };
+
+  const handleRatingChange = async (workoutId: string, rating: number) => {
+    setRatingUpdates((prev) => ({ ...prev, [workoutId]: true }));
+
+    try {
+      const { error } = await updateWorkoutRating(workoutId, rating);
+
+      if (error) {
+        console.error("Error updating rating:", error);
+        Alert.alert("Error", "Failed to save rating. Please try again.");
+      } else {
+        // Update the local state
+        setWorkouts((prev) =>
+          prev.map((workout) =>
+            workout.id === workoutId ? { ...workout, rating } : workout
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error in handleRatingChange:", error);
+      Alert.alert("Error", "An unexpected error occurred.");
+    } finally {
+      setRatingUpdates((prev) => ({ ...prev, [workoutId]: false }));
+    }
   };
 
   const handleDeleteWorkout = (workoutId: string) => {
@@ -191,8 +222,8 @@ export default function WorkoutsScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#1a1a2e", "#16213e", "#0f3460"]
-              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
+              ? ["#1C1C1E", "#2C2C2E", "#3C3C3E"]
+              : ["#F8F8F8", "#F2F2F2", "#EEEEEE"]
           }
           style={styles.background}
         />
@@ -207,8 +238,8 @@ export default function WorkoutsScreen() {
         <LinearGradient
           colors={
             colorScheme === "dark"
-              ? ["#1a1a2e", "#16213e", "#0f3460"]
-              : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
+              ? ["#1C1C1E", "#2C2C2E", "#3C3C3E"]
+              : ["#F8F8F8", "#F2F2F2", "#EEEEEE"]
           }
           style={styles.background}
         />
@@ -234,8 +265,8 @@ export default function WorkoutsScreen() {
       <LinearGradient
         colors={
           colorScheme === "dark"
-            ? ["#1a1a2e", "#16213e", "#0f3460"]
-            : ["#FF6B9D", "#C44EC4", "#8A2BE2", "#4A90E2"]
+            ? ["#1C1C1E", "#2C2C2E", "#3C3C3E"]
+            : ["#F8F8F8", "#F2F2F2", "#EEEEEE"]
         }
         style={styles.background}
       />
@@ -245,10 +276,10 @@ export default function WorkoutsScreen() {
           Your Workouts
         </ThemedText>
         <TouchableOpacity
-          style={styles.createButton}
+          style={[styles.createButton, { backgroundColor: colors.primary }]}
           onPress={handleCreateWorkout}
         >
-          <Ionicons name="add" size={24} color="white" />
+          <Ionicons name="add" size={26} color="white" />
         </TouchableOpacity>
       </View>
 
@@ -368,6 +399,24 @@ export default function WorkoutsScreen() {
                   ) : null}
                 </View>
               </View>
+
+              {/* Workout Rating Section */}
+              <View style={styles.ratingContainer}>
+                <WorkoutRating
+                  currentRating={item.rating || 0}
+                  onRatingChange={(rating) =>
+                    handleRatingChange(item.id, rating)
+                  }
+                  readonly={ratingUpdates[item.id] || false}
+                  size="small"
+                  showText={false}
+                />
+                {ratingUpdates[item.id] && (
+                  <ThemedText style={styles.updatingRatingText}>
+                    Saving...
+                  </ThemedText>
+                )}
+              </View>
             </TouchableOpacity>
           )}
         />
@@ -424,26 +473,23 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "white",
-    textShadowColor: "rgba(0, 0, 0, 0.3)",
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
     flex: 1,
     textAlign: "center",
     marginTop: 8,
   },
   createButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.2)",
   },
   emptyContainer: {
     flex: 1,
@@ -557,5 +603,16 @@ const styles = StyleSheet.create({
   completedText: {
     fontSize: 12,
     color: "#4BB543",
+  },
+  ratingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+  },
+  updatingRatingText: {
+    fontSize: 12,
+    color: "#888",
+    marginLeft: 8,
   },
 });

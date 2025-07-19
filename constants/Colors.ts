@@ -1,38 +1,38 @@
 /**
- * VibeFit color scheme - feminine yet modern colors (coral, lavender, rose gold, soft pastels)
+ * VibeFit color scheme - light, subtle, and modern colors (soft pastels and neutrals)
  */
 
-const primaryColor = "#FF6B6B"; // coral
-const secondaryColor = "#A78BFA"; // lavender
-const accentColor = "#F8B195"; // rose gold
+const primaryColor = "#E8A5A5"; // very light coral/rose
+const secondaryColor = "#D4C5F4"; // very light lavender
+const accentColor = "#F5E6D3"; // very light rose gold/beige
 
 export const Colors = {
   light: {
-    text: "#333333",
-    background: "#FFF5F7", // soft pink background
+    text: "#2C2C2C",
+    background: "#FAFAFA", // very light neutral background
     tint: primaryColor,
-    icon: "#687076",
-    tabIconDefault: "#687076",
+    icon: "#8B8B8B",
+    tabIconDefault: "#8B8B8B",
     tabIconSelected: primaryColor,
     primary: primaryColor,
     secondary: secondaryColor,
     accent: accentColor,
     cardBackground: "#FFFFFF",
     buttonText: "#FFFFFF",
-    border: "#E5E5E5",
+    border: "#E8E8E8",
   },
   dark: {
-    text: "#F8F9FA",
-    background: "#2D2D3A", // dark purple-ish background
+    text: "#F0F0F0",
+    background: "#1C1C1E", // subtle dark background
     tint: secondaryColor,
-    icon: "#9BA1A6",
-    tabIconDefault: "#9BA1A6",
+    icon: "#A0A0A0",
+    tabIconDefault: "#A0A0A0",
     tabIconSelected: secondaryColor,
-    primary: "#FF8C94", // lighter coral for dark mode
-    secondary: "#B197FC", // lighter lavender for dark mode
-    accent: "#F9C29D", // lighter rose gold for dark mode
-    cardBackground: "#3D3D4D",
+    primary: "#E8A5A5", // light coral for dark mode
+    secondary: "#D4C5F4", // light lavender for dark mode
+    accent: "#F5E6D3", // light rose gold for dark mode
+    cardBackground: "#2C2C2E",
     buttonText: "#FFFFFF",
-    border: "#5D5D6D",
+    border: "#3C3C3E",
   },
 };
