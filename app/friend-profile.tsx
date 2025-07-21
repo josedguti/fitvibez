@@ -135,19 +135,10 @@ export default function FriendProfileScreen() {
   // Helper function to format dates nicely
   const formatWorkoutDate = (dateString: string) => {
     const date = new Date(dateString);
-    const now = new Date();
-    const diffInDays = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-    );
-
-    if (diffInDays === 0) return "Today";
-    if (diffInDays === 1) return "Yesterday";
-    if (diffInDays < 7) return `${diffInDays} days ago`;
-
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
-      year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
+      year: "numeric",
     });
   };
 
@@ -202,8 +193,17 @@ export default function FriendProfileScreen() {
         },
       ]}
       onPress={() => {
-        // You can add navigation to workout detail if desired
-        // router.push({ pathname: "/workout-detail", params: { workoutData: JSON.stringify(item.workout_data) }});
+        router.push({
+          pathname: "/workout-detail",
+          params: {
+            workoutData: JSON.stringify(item.workout_data),
+            workoutId: item.id,
+            rating: item.rating?.toString() || "0",
+            fromFriendProfile: "true",
+            friendId: friendId,
+            friendUsername: friendProfile?.username || "Friend",
+          },
+        });
       }}
     >
       <View style={styles.workoutHeader}>

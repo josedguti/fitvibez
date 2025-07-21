@@ -571,6 +571,5 @@ const styles = StyleSheet.create({
   editAvatarText: {
     marginLeft: 6,
     fontSize: 13,
-    color: undefined, // Use theme color
   },
 });

@@ -18,9 +18,14 @@ const WORKOUT_TYPES = [
     icon: "barbell-outline" as const,
   },
   { label: "Cardio", value: "cardio", icon: "heart-outline" as const },
-  { label: "Both", value: "both", icon: "fitness-outline" as const },
+  {
+    label: "Strength & Cardio",
+    value: "both",
+    icon: "fitness-outline" as const,
+  },
   { label: "Flexibility", value: "flexibility", icon: "body-outline" as const },
   { label: "HIIT", value: "hiit", icon: "flash-outline" as const },
+  { label: "Yoga", value: "yoga", icon: "leaf-outline" as const },
 ];
 
 export default function WorkoutTypeScreen() {

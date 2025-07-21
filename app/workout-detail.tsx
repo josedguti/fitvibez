@@ -25,6 +25,9 @@ export default function WorkoutDetailScreen() {
   const workoutId = params.workoutId as string;
   const workoutDataString = params.workoutData as string;
   const initialRating = params.rating ? parseInt(params.rating as string) : 0;
+  const fromFriendProfile = params.fromFriendProfile === "true";
+  const friendId = params.friendId as string;
+  const friendUsername = params.friendUsername as string;
 
   const [workout, setWorkout] = useState<WorkoutResponse | null>(null);
   const [currentRating, setCurrentRating] = useState<number>(initialRating);
@@ -79,6 +82,10 @@ export default function WorkoutDetailScreen() {
 
   const handleGoHome = () => {
     router.replace("/(tabs)");
+  };
+
+  const handleGoBackToFriendProfile = () => {
+    router.back();
   };
 
   if (!workout) {
@@ -177,7 +184,7 @@ export default function WorkoutDetailScreen() {
         </View>
 
         {/* Workout Rating Section */}
-        {workoutId && (
+        {workoutId && !fromFriendProfile && (
           <View style={styles.ratingCard}>
             <LinearGradient
               colors={
@@ -371,17 +378,35 @@ export default function WorkoutDetailScreen() {
 
         {/* Action Buttons */}
         <View style={styles.actionButtonsContainer}>
-          <Button
-            title="View All Workouts"
-            onPress={handleGoToWorkouts}
-            style={styles.saveButton}
-          />
-          <Button
-            title="Go Home"
-            onPress={handleGoHome}
-            variant="outline"
-            style={styles.homeActionButton}
-          />
+          {fromFriendProfile ? (
+            <>
+              <Button
+                title={`Back to ${friendUsername}'s Profile`}
+                onPress={handleGoBackToFriendProfile}
+                style={styles.saveButton}
+              />
+              <Button
+                title="Go Home"
+                onPress={handleGoHome}
+                variant="outline"
+                style={styles.homeActionButton}
+              />
+            </>
+          ) : (
+            <>
+              <Button
+                title="View All Workouts"
+                onPress={handleGoToWorkouts}
+                style={styles.saveButton}
+              />
+              <Button
+                title="Go Home"
+                onPress={handleGoHome}
+                variant="outline"
+                style={styles.homeActionButton}
+              />
+            </>
+          )}
         </View>
       </ScrollView>
     </ThemedView>
