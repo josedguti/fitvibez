@@ -1,12 +1,12 @@
-# VibeFit
+# FitVibez
 
-VibeFit is a cross-platform mobile application designed to empower women to stay fit by delivering personalized, AI-powered workout routines tailored to their mood, available time, fitness goals, and preferred workout type (e.g., cardio, strength, or full-body).
+FitVibez is a cross-platform mobile application designed to empower women to stay fit by delivering personalized, AI-powered workout routines tailored to their mood, available time, fitness goals, and preferred workout type (e.g., cardio, strength, or full-body).
 
 🎯 Vision
-Today's women lead busy lives but still want to look good, feel strong, and stay healthy. VibeFit provides efficient, custom-tailored workouts that fit into their lifestyle — whether they have 10 minutes or an hour, whether they're feeling energetic or tired, and whether they want to focus on cardio, weights, or both.
+Today's women lead busy lives but still want to look good, feel strong, and stay healthy. FitVibez provides efficient, custom-tailored workouts that fit into their lifestyle — whether they have 10 minutes or an hour, whether they're feeling energetic or tired, and whether they want to focus on cardio, weights, or both.
 
 🚀 MVP Goals
-The MVP of VibeFit includes the following core functionality:
+The MVP of FitVibez includes the following core functionality:
 
 ✅ Key Features
 User Authentication (via Supabase)
@@ -100,7 +100,7 @@ Voice-guided workouts
 
 📂 Folder Structure
 
-/vibefit
+/fitvibez
 ├── /app
 ├── /assets
 ├── /components

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "VibeFit",
-    "slug": "vibefit",
+    "name": "FitVibez",
+    "slug": "fitvibez",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "vibefit",
+    "scheme": "fitvibez",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,14 +15,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.vibefit.app"
+      "bundleIdentifier": "com.fitvibez.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#FFF5F7"
       },
-      "package": "com.vibefit.app",
+      "package": "com.fitvibez.app",
       "edgeToEdgeEnabled": true
     },
     "web": {

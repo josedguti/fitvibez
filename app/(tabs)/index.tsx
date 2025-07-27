@@ -3,7 +3,7 @@ import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
 
-import VibeFitLogo from "@/assets/images/vibefit-logo";
+import FitVibezLogo from "@/assets/images/fitvibez-logo";
 import { Button } from "@/components/Button";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -82,7 +82,7 @@ export default function HomeScreen() {
               colors={["rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0.05)"]}
               style={styles.logoCircle}
             >
-              <VibeFitLogo width={width * 0.22} height={width * 0.22} />
+              <FitVibezLogo width={width * 0.22} height={width * 0.22} />
             </LinearGradient>
           </View>
 
@@ -90,7 +90,7 @@ export default function HomeScreen() {
           <View style={styles.welcomeContainer}>
             <ThemedText style={styles.welcomeEmoji}>💪✨</ThemedText>
             <ThemedText style={styles.welcomeText}>
-              {isAuthenticated ? "Ready to Crush It?" : "Welcome to VibeFit!"}
+              {isAuthenticated ? "Ready to Crush It?" : "Welcome to FitVibez!"}
             </ThemedText>
             <ThemedText style={styles.tagline}>
               🚀 Your AI-powered fitness companion that adapts to your mood,
@@ -124,7 +124,7 @@ export default function HomeScreen() {
         {/* Features Section */}
         <View style={styles.featuresSection}>
           <ThemedText style={styles.sectionTitle}>
-            ✨ What Makes VibeFit Special
+            ✨ What Makes FitVibez Special
           </ThemedText>
 
           <FeatureCard
@@ -168,7 +168,7 @@ export default function HomeScreen() {
               "Every workout is a step closer to the best version of yourself"
             </ThemedText>
             <ThemedText style={styles.quoteAuthor}>
-              - Your VibeFit Coach
+              - Your FitVibez Coach
             </ThemedText>
           </LinearGradient>
         </View>

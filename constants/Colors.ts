@@ -1,5 +1,5 @@
 /**
- * VibeFit color scheme - light, subtle, and modern colors (soft pastels and neutrals)
+ * FitVibez color scheme - light, subtle, and modern colors (soft pastels and neutrals)
  */
 
 const primaryColor = "#E8A5A5"; // very light coral/rose

@@ -3,15 +3,15 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import React from "react";
 import Svg, { Circle, G, Path } from "react-native-svg";
 
-interface VibeFitLogoProps {
+interface FitVibezLogoProps {
   width?: number;
   height?: number;
 }
 
-export default function VibeFitLogo({
+export default function FitVibezLogo({
   width = 200,
   height = 200,
-}: VibeFitLogoProps) {
+}: FitVibezLogoProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
 
@@ -20,10 +20,10 @@ export default function VibeFitLogo({
       {/* Background circle */}
       <Circle cx="100" cy="100" r="90" fill={colors.accent} opacity={0.2} />
 
-      {/* Stylized "V" for VibeFit */}
+      {/* Stylized "F" for FitVibez */}
       <G>
         <Path
-          d="M60,40 L80,40 L100,120 L120,40 L140,40 L110,160 L90,160 Z"
+          d="M50,40 L50,160 L70,160 L70,110 L120,110 L120,90 L70,90 L70,60 L130,60 L130,40 L50,40 Z"
           fill={colors.primary}
         />
       </G>
