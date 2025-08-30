@@ -12,6 +12,7 @@ import {
 } from "react-native";
 
 import { Button } from "@/components/Button";
+import { FeedbackModal } from "@/components/FeedbackModal";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
@@ -34,6 +35,7 @@ export default function ProfileScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? "light"];
 
@@ -425,6 +427,13 @@ export default function ProfileScreen() {
             />
 
             <Button
+              title="Send Feedback"
+              onPress={() => setShowFeedbackModal(true)}
+              style={styles.feedbackButton}
+              variant="primary"
+            />
+
+            <Button
               title="Logout"
               onPress={handleLogout}
               style={styles.logoutButton}
@@ -433,6 +442,11 @@ export default function ProfileScreen() {
           </View>
         </View>
       </ScrollView>
+
+      <FeedbackModal
+        visible={showFeedbackModal}
+        onClose={() => setShowFeedbackModal(false)}
+      />
     </ThemedView>
   );
 }
@@ -553,6 +567,9 @@ const styles = StyleSheet.create({
     gap: 12, // Reduced from 12
   },
   editButton: {
+    width: "100%",
+  },
+  feedbackButton: {
     width: "100%",
   },
   logoutButton: {

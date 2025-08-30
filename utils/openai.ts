@@ -64,7 +64,7 @@ export async function generateWorkout(
 
     // Call OpenAI API
     const response = await openai.chat.completions.create({
-      model: "o4-mini",
+      model: "gpt-5-mini",
       messages: [
         {
           role: "system",
@@ -181,7 +181,8 @@ function buildWorkoutPrompt(params: WorkoutParams, userProfile: any): string {
       "reps": "number or range of repetitions" (if applicable),
       "duration": "time duration" (if applicable for timed exercises),
       "restBetweenSets": "rest time between sets",
-      "instructions": "detailed instructions on how to perform the exercise correctly"
+      "instructions": "detailed instructions on how to perform the exercise correctly",
+      "videoUrl": "YouTube video URL demonstrating the exercise (search for high-quality fitness demonstrations)"
     }
   ],
   "warmup": "brief warmup routine description",
@@ -191,10 +192,19 @@ function buildWorkoutPrompt(params: WorkoutParams, userProfile: any): string {
 }
 
 IMPORTANT: 
-- Do NOT include videoUrl fields in the response - our app will automatically provide appropriate exercise demonstration videos
+- ALWAYS include a videoUrl for each exercise - provide specific YouTube URLs for exercise demonstrations
+- For each exercise, imagine you're searching YouTube with terms like "[exercise name] tutorial", "[exercise name] proper form", or "[exercise name] how to"
+- Use standard, searchable exercise names that would have many YouTube videos available (e.g., "Push-up", "Squat", "Plank", "Deadlift", "Bicep Curl")
+- Provide complete YouTube URLs in the format: https://www.youtube.com/watch?v=VIDEO_ID
+- Consider popular fitness channels and common demonstration videos that would exist for standard exercises
+- If an exercise has variations, choose the most basic/standard form for better video availability
 - Focus on clear, detailed instructions for each exercise to ensure proper form and safety
-- Make sure exercise names are standard and commonly recognized (e.g., "Push-up", "Squat", "Plank")
-- The instructions should be comprehensive enough that users can perform exercises safely without video if needed`;
+- The instructions should be comprehensive enough that users can perform exercises safely even if the video fails to load
+
+Examples of good exercise naming and video URL format:
+- "Push-up" with videoUrl: "https://www.youtube.com/watch?v=IODxDxX7oi4"
+- "Bodyweight Squat" with videoUrl: "https://www.youtube.com/watch?v=aclHkVaku9U"
+- "Plank" with videoUrl: "https://www.youtube.com/watch?v=pSHjTRCQxIw"`;
 
   return prompt;
 }

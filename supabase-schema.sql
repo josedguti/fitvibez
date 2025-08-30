@@ -236,4 +236,29 @@ GRANT EXECUTE ON FUNCTION public.decline_friend_request(UUID) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.remove_friendship(UUID) TO authenticated;
 
 -- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp"; 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Create feedback table
+CREATE TABLE IF NOT EXISTS public.feedback (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  feedback_type TEXT NOT NULL CHECK (feedback_type IN ('bug', 'feature', 'improvement', 'general')),
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+  email TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
+-- Create RLS policies for feedback
+ALTER TABLE public.feedback ENABLE ROW LEVEL SECURITY;
+
+-- Policy to allow users to insert their own feedback
+CREATE POLICY "Users can submit feedback" ON public.feedback
+  FOR INSERT WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
+
+-- Policy to allow users to read their own feedback
+CREATE POLICY "Users can read their own feedback" ON public.feedback
+  FOR SELECT USING (auth.uid() = user_id);
+
+-- Grant permissions for feedback table
+GRANT SELECT, INSERT ON public.feedback TO authenticated; 
